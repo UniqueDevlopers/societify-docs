@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Uniquify - Complete Documentation</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <button class="mobile-menu-toggle">☰</button>
+    
+    <nav class="sidebar">
+        <a href="#" class="logo">Uniquify Docs</a>
+        
+        <div class="nav-group">
+            <div class="nav-header">Getting Started</div>
+            <a class="nav-link active" data-target="introduction">Introduction</a>
+            <a class="nav-link" data-target="requirements">System Requirements</a>
+            <a class="nav-link" data-target="installation">Installation</a>
+        </div>
+
+        <div class="nav-group">
+            <div class="nav-header">Configuration</div>
+            <a class="nav-link" data-target="env-setup">Environment Setup</a>
+            <a class="nav-link" data-target="mobile-config">Mobile App Config</a>
+            <a class="nav-link" data-target="cron-jobs">Cron Jobs</a>
+            <a class="nav-link" data-target="mail-setup">Mail Configuration</a>
+        </div>
+
+        <div class="nav-group">
+            <div class="nav-header">Web Dashboard Guide</div>
+            <a class="nav-link" data-target="super-admin">Super Admin</a>
+            <a class="nav-link" data-target="society-admin">Society Admin</a>
+        </div>
+
+        <div class="nav-group">
+            <div class="nav-header">Mobile App Guide</div>
+            <a class="nav-link" data-target="resident-app">Resident App</a>
+            <a class="nav-link" data-target="guard-app">Guard App</a>
+            <a class="nav-link" data-target="vendor-app">Vendor & Staff</a>
+        </div>
+
+        <div class="nav-group">
+            <div class="nav-header">Development</div>
+            <a class="nav-link" data-target="folder-structure">Folder Structure</a>
+            <a class="nav-link" data-target="api-docs">API Documentation</a>
+            <a class="nav-link" data-target="razorpay-integration">Razorpay Integration</a>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <!-- Introduction -->
+        <section id="introduction" class="active">
+            <h1>Introduction</h1>
+            <p>Welcome to the <strong>Uniquify</strong> documentation. Uniquify is a comprehensive Society Management System designed to streamline operations for residential communities, offering seamless management of visitors, billing, facilities, and communications.</p>
+            <p>The system consists of a robust <strong>Laravel Backend</strong>, a React-based <strong>Web Admin Dashboard</strong>, and a high-performance <strong>Flutter Mobile Application</strong> supporting 5 distinct user roles: Resident, Guard, Vendor, Staff, and Collector.</p>
+            
+            <div class="alert alert-info">
+                <strong>Note:</strong> This merged documentation covers the installation, configuration, and usage of BOTH the web application and the mobile application.
+            </div>
+
+            <h2>Key Features</h2>
+            <ul>
+                <li><strong>Multi-Tenancy:</strong> Manage multiple societies from a single Super Admin dashboard.</li>
+                <li><strong>Role-Based Access:</strong> Granular permissions for Super Admin, Society Admin, Sub Admin, Accountant, Guard, and Residents.</li>
+                <li><strong>Billing & Payments:</strong> Integrated payment gateways (Razorpay, Stripe, PayPal) for subscription and maintenance collection.</li>
+                <li><strong>Visitor Management:</strong> Secure QR-code based visitor entry and exit logs via the Guard App.</li>
+                <li><strong>Complaint System:</strong> Ticket-based support system for residents.</li>
+            </ul>
+
+            <div class="row" style="display: flex; gap: 20px; flex-wrap: wrap;">
+                <div style="flex: 1; min-width: 300px;">
+                    <img src="assets/images/dashboard-superadmin.png" alt="Super Admin Dashboard" class="screenshot">
+                    <p class="img-caption">Figure 1: Super Admin Dashboard</p>
+                </div>
+                <div style="flex: 1; min-width: 300px;">
+                    <img src="assets/images/home.png" alt="Mobile App Home" class="screenshot">
+                    <p class="img-caption">Figure 2: Mobile App Resident Home</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- System Requirements -->
+        <section id="requirements">
+            <h1>System Requirements</h1>
+            <p>Before installing Uniquify, ensure your environment meets the following requirements:</p>
+            
+            <h2>Backend Server</h2>
+            <ul>
+                <li>PHP >= 8.2 (Recommended)</li>
+                <li>MySQL >= 5.7 or MariaDB >= 10.3</li>
+                <li>BCMath PHP Extension</li>
+                <li>Ctype PHP Extension</li>
+                <li>Fileinfo PHP Extension</li>
+                <li>JSON PHP Extension</li>
+                <li>Mbstring PHP Extension</li>
+                <li>OpenSSL PHP Extension</li>
+                <li>PDO PHP Extension</li>
+                <li>Tokenizer PHP Extension</li>
+                <li>XML PHP Extension</li>
+                <li>Actively running Cron Jobs</li>
+            </ul>
+
+            <div class="alert alert-warning">
+                <strong>Important:</strong> Ensure that your server exposes the <code>public</code> directory as the web root.
+            </div>
+
+            <h2>Mobile App Development</h2>
+            <ul>
+                <li>Flutter SDK >= 3.10.0</li>
+                <li>Dart SDK >= 3.0.0</li>
+                <li>Android Studio (for Android build)</li>
+                <li>Xcode (for iOS build - macOS only)</li>
+            </ul>
+        </section>
+
+        <!-- Installation -->
+        <section id="installation">
+            <h1>Installation</h1>
+            <p>Follow these steps to set up the Backend and the Mobile Application.</p>
+
+            <div class="tabs">
+                <button class="tab-btn active" data-tab="web-install">Web / Backend</button>
+                <button class="tab-btn" data-tab="mobile-install">Mobile App</button>
+            </div>
+
+            <div class="tab-wrapper">
+                <!-- Web Installer -->
+                <div id="web-install" class="tab-content active">
+                    <h3>1. Web Installer (Recommended)</h3>
+                    <p>Upload the project zip file to your server (public_html) and extract it.</p>
+                    <p>Open your website URL in the browser (e.g., <code>https://yourdomain.com/install</code>). You will be greeted by the simple setup wizard.</p>
+                    
+                    <h3>2. CLI Installation (Manual)</h3>
+                    <p>Clone the repository and install dependencies:</p>
+                    <pre><code>git clone https://github.com/codecynon/uniquify-backend.git
+cd uniquify-backend
+composer install --optimize-autoloader --no-dev
+cp .env.example .env
+php artisan key:generate
+                    </code></pre>
+                    
+                    <p>Create a MySQL database and update your <code>.env</code> file. Then run migrations:</p>
+                    <pre><code>php artisan migrate --seed</code></pre>
+                    
+                    <div class="alert alert-success">
+                        <strong>Success:</strong> The database has been seeded with default admin credentials.
+                        <br>Email: <code>admin@example.com</code>
+                        <br>Password: <code>password</code>
+                    </div>
+                </div>
+
+                <!-- Mobile App Installer -->
+                <div id="mobile-install" class="tab-content">
+                    <h3>Mobile App Setup</h3>
+                    <p>Navigate to the mobile app directory and install packages:</p>
+                    <pre><code>cd mobile-app
+flutter pub get</code></pre>
+
+                    <h3>Firebase Setup</h3>
+                    <p>Place your <code>google-services.json</code> (Android) and <code>GoogleService-Info.plist</code> (iOS) in the respective directories:</p>
+                    <ul>
+                        <li>Android: <code>android/app/google-services.json</code></li>
+                        <li>iOS: <code>ios/Runner/GoogleService-Info.plist</code></li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Configuration -->
+        <section id="env-setup">
+            <h1>Environment Setup</h1>
+            <p>Detailed configuration for third-party services in the Backend.</p>
+
+            <img src="assets/images/settings.png" alt="System Settings" class="screenshot">
+            <p class="img-caption">Figure 3: System Settings & Configuration</p>
+
+            <h2>Payment Gateways</h2>
+            <div class="tabs">
+                <button class="tab-btn active" data-tab="razorpay">Razorpay</button>
+                <button class="tab-btn" data-tab="stripe">Stripe</button>
+                <button class="tab-btn" data-tab="paypal">PayPal</button>
+            </div>
+            
+            <div class="tab-wrapper">
+                <div id="razorpay" class="tab-content active">
+                    <h3>Razorpay Configuration</h3>
+                    <pre><code>RAZORPAY_KEY=rzp_test_...
+RAZORPAY_SECRET=...</code></pre>
+                </div>
+                <div id="stripe" class="tab-content">
+                    <h3>Stripe Configuration</h3>
+                    <pre><code>STRIPE_KEY=pk_test_...
+STRIPE_SECRET=sk_test_...</code></pre>
+                </div>
+                <div id="paypal" class="tab-content">
+                    <h3>PayPal Configuration</h3>
+                    <pre><code>PAYPAL_MODE=sandbox
+PAYPAL_CLIENT_ID=...
+PAYPAL_CLIENT_SECRET=...</code></pre>
+                </div>
+            </div>
+        </section>
+
+        <section id="mobile-config">
+            <h1>Mobile App Configuration</h1>
+            <p>Configure the connection settings in <code>lib/constants/api_constants.dart</code> to switch between local development and production environments.</p>
+
+            <pre><code>class ApiConstants {
+  /// Set to false to use production API, true for local development
+  static const bool useLocalHost = true;
+
+  /// Production API URL (used when useLocalHost is false)
+  static const String productionApiUrl = 'https://uniquify.uniquedeveloper.in';
+
+  /// Set to true when testing on a physical device connected to local network
+  static const bool usePhysicalDevice = false;
+}</code></pre>
+
+            <h3>Configuration Guide:</h3>
+            <table style="width: 100%; text-align: left; border-collapse: collapse; margin-top: 10px; border: 1px solid #e2e8f0;">
+                <thead>
+                    <tr style="border-bottom: 2px solid #e2e8f0; background: #f8fafc;">
+                        <th style="padding: 12px;">Variable</th>
+                        <th style="padding: 12px;">Description</th>
+                        <th style="padding: 12px;">When to use TRUE</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr style="border-bottom: 1px solid #e2e8f0;">
+                        <td style="padding: 12px;"><code>useLocalHost</code></td>
+                        <td style="padding: 12px;">Switches between Local API and Production API.</td>
+                        <td style="padding: 12px;">For Development.</td>
+                    </tr>
+                    <tr style="border-bottom: 1px solid #e2e8f0;">
+                        <td style="padding: 12px;"><code>usePhysicalDevice</code></td>
+                        <td style="padding: 12px;">Changes localhost IP: <code>10.0.2.2</code> (Emulator) vs <code>192.168.x.x</code> (Real Device).</td>
+                        <td style="padding: 12px;">When running the app on a real phone via USB/WiFi.</td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="alert alert-warning">
+                <strong>Deployment Note:</strong> Always set <code>useLocalHost = false</code> before building the app for release (Play Store/App Store).
+            </div>
+        </section>
+
+        <section id="cron-jobs">
+            <h1>Cron Jobs</h1>
+            <p>Uniqify requires a single Cron entry to run scheduled tasks (like subscription checks, cleanup).</p>
+
+            <pre><code>* * * * * cd /path-to-your-project && php artisan schedule:run >> /dev/null 2>&1</code></pre>
+        </section>
+
+        <section id="mail-setup">
+            <h1>Mail Configuration</h1>
+            <p>Configure your SMTP settings to enable email notifications.</p>
+
+            <img src="assets/images/mail-setup.png" alt="Mail Configuration" class="screenshot">
+            
+            <h3>SMTP Settings</h3>
+            <p>Update your <code>.env</code> file with your mail provider details.</p>
+            <pre><code>MAIL_MAILER=smtp
+MAIL_HOST=smtp.mailtrap.io
+MAIL_PORT=2525
+MAIL_USERNAME=your_username
+MAIL_PASSWORD=your_password
+MAIL_ENCRYPTION=tls
+MAIL_FROM_ADDRESS="hello@example.com"
+MAIL_FROM_NAME="${APP_NAME}"</code></pre>
+        </section>
+
+        <!-- Web Dashboard Guide -->
+        <section id="super-admin">
+            <h1>Super Admin Guide</h1>
+            <p>The Super Admin panel is the central control hub for managing the entire platform. It allows you to oversee multiple societies, manage subscriptions, and configure system-wide settings.</p>
+
+            <img src="assets/images/dashboard-superadmin.png" alt="Super Admin Dashboard" class="screenshot">
+
+            <h3>1. Managing Societies</h3>
+            <p>Navigate to the <strong>Societies</strong> tab to create and manage society accounts. This is where you onboard new communities onto the platform.</p>
+            <ul>
+                <li><strong>Create Society:</strong> Add new societies with details like name, address, and admin contact.</li>
+                <li><strong>Status Management:</strong> Active, suspend, or delete society accounts.</li>
+                <li><strong>View Details:</strong> Access society-specific analytics and settings.</li>
+            </ul>
+            <img src="assets/images/sa-societies.png" alt="Society Management" class="screenshot">
+
+            <h3>2. Subscription Plans</h3>
+            <p>Create various subscription tiers (e.g., Free, Gold, Platinum) with different feature sets and limits. You can define monthly and yearly pricing for each plan.</p>
+            <img src="assets/images/superadmin-plans.png" alt="Subscription Plans" class="screenshot" style="max-height: 400px; width: auto;">
+
+            <h3>3. User Management</h3>
+            <p>View and manage all system users, including other admins and society staff. You can reset passwords and update roles directly from this panel.</p>
+            <img src="assets/images/sa-users.png" alt="User Management" class="screenshot">
+        </section>
+
+        <section id="society-admin">
+            <h1>Society Admin Guide</h1>
+            <p>The Society Admin panel is designed for managing the day-to-day operations of a specific community, covering everything from residents to financial accounting.</p>
+
+            <img src="assets/images/dashboard-society.png" alt="Society Admin Dashboard" class="screenshot">
+
+            <h3>1. Property Management</h3>
+            <p>Set up the physical structure of your community by defining buildings (blocks) and individual units (flats/villas).</p>
+            <div class="row" style="display: flex; gap: 20px; flex-wrap: wrap;">
+                <div style="flex: 1;">
+                    <img src="assets/images/soc-buildings.png" alt="Buildings List" class="screenshot">
+                    <p class="img-caption">Buildings</p>
+                </div>
+                <div style="flex: 1;">
+                    <img src="assets/images/soc-units.png" alt="Units List" class="screenshot">
+                    <p class="img-caption">Units</p>
+                </div>
+            </div>
+
+            <h3>2. Resident Management</h3>
+            <p>Maintain a digital directory of all residents. The system supports Owners, Tenants, and Family Members.</p>
+            <img src="assets/images/society-residents.png" alt="Residents Directory" class="screenshot">
+
+            <h3>3. Billing & Accounting</h3>
+            <p>Automate your society's finances. The billing module allows you to generate bills, track revenue, and record expenses.</p>
+            <img src="assets/images/soc-bills.png" alt="Bills List" class="screenshot">
+            <img src="assets/images/soc-revenue.png" alt="Revenue Stats" class="screenshot">
+
+            <h3>4. Visitor Management</h3>
+            <p>Secure your gates with the visitor tracking system. Guards can check residents in/out, and residents can pre-approve guests via the mobile app.</p>
+            <img src="assets/images/soc-visitors.png" alt="Visitor Logs" class="screenshot">
+
+            <h3>5. Facility Booking</h3>
+            <p>Manage community amenities like Clubhouses, Swimming Pools, and Tennis Courts. Residents can book slots online, and you can track utilization.</p>
+            <div class="row" style="display: flex; gap: 20px; flex-wrap: wrap;">
+                <div style="flex: 1;">
+                    <img src="assets/images/soc-facilities.png" alt="Facilities List" class="screenshot">
+                </div>
+            </div>
+
+            <h3>6. Helpdesk & Complaints</h3>
+            <p>A centralized system for tracking resident complaints. Assign tickets to staff (electricians, plumbers) and track resolution times.</p>
+            <img src="assets/images/soc-tickets.png" alt="Complaints List" class="screenshot">
+
+            <h3>7. Announcements & Notices</h3>
+            <p>Broadcast important information to all residents instantly via mobile push notifications and email.</p>
+            <img src="assets/images/soc-announcements.png" alt="Announcements" class="screenshot">
+        </section>
+
+        <!-- Mobile App Guide -->
+        <section id="resident-app">
+            <h1>Resident Mobile App</h1>
+            <p>Residents are the primary users who live in the society and access features managed by the Society Admin.</p>
+            
+            <div class="row" style="display: flex; gap: 20px; flex-wrap: wrap;">
+                <div style="flex: 1; min-width: 250px;">
+                    <img src="assets/images/login.png" alt="Login Screen" class="screenshot" style="max-height: 500px; object-fit: contain;">
+                    <p class="img-caption">Secure Login & OTP</p>
+                </div>
+                <div style="flex: 1; min-width: 250px;">
+                    <img src="assets/images/home.png" alt="Resident Dashboard" class="screenshot" style="max-height: 500px; object-fit: contain;">
+                    <p class="img-caption">Dashboard</p>
+                </div>
+            </div>
+
+            <h3>Key Features</h3>
+            <ul>
+                <li><strong>Bill Payment:</strong> View and pay maintenance bills online via Razorpay.</li>
+                <li><strong>Facility Booking:</strong> Book amenities like Gym or Pool and pay instantly.</li>
+                <li><strong>Visitor Pre-Approval:</strong> Generate entry codes for guests to speed up gate entry.</li>
+                <li><strong>Complaints:</strong> Raise tickets for maintenance issues (Plumbing, Electrical, etc.).</li>
+                <li><strong>Community:</strong> View announcements, polls, and access the resident directory.</li>
+            </ul>
+
+            <img src="assets/images/bills.png" alt="Bills Management" class="screenshot" style="max-height: 500px; width: auto; display: block; margin: 0 auto;">
+            <p class="img-caption">Bill Management Interface</p>
+        </section>
+
+        <section id="guard-app">
+            <h1>Guard App</h1>
+            <p>Designed for security personnel to manage visitor entry/exit and emergency alerts.</p>
+
+            <img src="assets/images/guard.png" alt="Guard Dashboard" class="screenshot" style="max-height: 500px; width: auto; display: block; margin: 0 auto;">
+
+            <h3>Key Features</h3>
+            <ul>
+                <li><strong>QR Code Scanning:</strong> Quickly scan pre-approved visitor codes.</li>
+                <li><strong>Manual Entry:</strong> Register unexpected visitors and vehicle details.</li>
+                <li><strong>Emergency Alerts:</strong> Receive and respond to SOS alerts from residents.</li>
+                <li><strong>Live Monitoring:</strong> View expected visitors and current visitors inside.</li>
+            </ul>
+        </section>
+
+        <section id="vendor-app">
+            <h1>Vendor & Staff App</h1>
+            <p>For service providers and society staff assigned to maintenance jobs.</p>
+            
+            <h3>Vendor Features</h3>
+            <ul>
+                <li><strong>Job Board:</strong> View assigned maintenance tickets.</li>
+                <li><strong>Status Updates:</strong> Mark jobs as "In Progress" or "Resolved".</li>
+                <li><strong>Earnings:</strong> Track payments and completed jobs.</li>
+            </ul>
+
+            <h3>Collector Features</h3>
+            <ul>
+                <li><strong>Door-to-Door Collection:</strong> Collect maintenance dues in cash.</li>
+                <li><strong>Digital Receipts:</strong> Generate receipts instantly for residents.</li>
+                <li><strong>Outstanding List:</strong> View list of flats with pending dues.</li>
+            </ul>
+        </section>
+
+        <!-- Development -->
+        <section id="folder-structure">
+            <h1>Folder Structure</h1>
+            <p>Understanding the project structure.</p>
+            <ul>
+                <li><code>app/Http/Controllers</code>: Contains API and Web controllers.</li>
+                <li><code>routes/api.php</code>: API Routes for the mobile app and third-party integrations.</li>
+                <li><code>routes/web.php</code>: Web routes for the admin dashboard.</li>
+                <li><code>resources/js</code>: React frontend source files (Inertia.js).</li>
+            </ul>
+        </section>
+
+        <section id="api-docs">
+            <h1>API Documentation</h1>
+            <p>The application provides a RESTful API for mobile app communication.</p>
+            
+            <h3>Base URL</h3>
+            <code>http://your-domain.com/api/v1</code>
+
+            <h3>Authentication</h3>
+            <p>The API uses Sanctum for authentication. Send the token in the Authorization header.</p>
+            <pre><code>Authorization: Bearer <your_token></code></pre>
+
+            <h3>Common Endpoints</h3>
+            <ul>
+                <li><code>POST /login</code> - Authenticate user</li>
+                <li><code>GET /user</code> - Get current user profile</li>
+                <li><code>GET /resident/bills</code> - List resident bills</li>
+            </ul>
+        </section>
+
+        <section id="razorpay-integration">
+            <h1>Razorpay Integration</h1>
+            <p>Backend API implementation details for Razorpay Facility Bookings.</p>
+
+            <h3>1. Create Razorpay Order</h3>
+            <p><strong>Endpoint:</strong> <code>POST /api/resident/facility-bookings/create-order</code></p>
+            <pre><code>// Request Body
+{
+  "facility_id": 1,
+  "slot_id": 2,
+  "booking_date": "2025-12-10",
+  "amount": 500
+}</code></pre>
+
+            <h3>2. Verify Payment</h3>
+            <p><strong>Endpoint:</strong> <code>POST /api/resident/facility-bookings/verify-payment</code></p>
+            <p>This endpoint verifies the signature returned by the Razorpay SDK and confirms the booking.</p>
+
+            <h3>3. Webhook Handling</h3>
+            <p>The system listens to Razorpay webhooks to handle async payment updates.</p>
+            <ul>
+                <li><strong>URL:</strong> <code>https://your-domain.com/api/webhooks/razorpay</code></li>
+                <li><strong>Events:</strong> <code>payment.captured</code>, <code>payment.failed</code></li>
+            </ul>
+
+            <h3>4. Bulk Availability (Optimization)</h3>
+            <p><strong>Endpoint:</strong> <code>GET /api/resident/facilities/{id}/availability</code></p>
+            <p>To prevent the "All Slots Green" bug, use this endpoint to fetch booking counts/availability efficiently.</p>
+            <pre><code>// Response
+{
+    "success": true,
+    "data": {
+        "2025-12-07": "full",
+        "2025-12-08": "partial",
+        "2025-12-09": "available"
+    }
+}</code></pre>
+        </section>
+
+    </main>
+    <script src="assets/js/script.js"></script>
+</body>
+</html>
