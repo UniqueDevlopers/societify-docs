@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Uniquify - Complete Documentation</title>
+    <title>Societify - Complete Documentation</title>
+    <link rel="icon" type="image/png" href="assets/images/favicon.png">
     <link rel="stylesheet" href="assets/css/style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -13,7 +14,10 @@
     <button class="mobile-menu-toggle">☰</button>
     
     <nav class="sidebar">
-        <a href="#" class="logo">Uniquify Docs</a>
+        <a href="#" class="logo">
+            <img src="assets/images/logo_light.png" alt="Societify" style="height: 40px; width: auto; margin-right: 8px; vertical-align: middle;">
+            <!-- <span>Societify Docs</span> -->
+        </a>
         
         <div class="nav-group">
             <div class="nav-header">Getting Started</div>
@@ -25,7 +29,6 @@
         <div class="nav-group">
             <div class="nav-header">Configuration</div>
             <a class="nav-link" data-target="env-setup">Environment Setup</a>
-            <a class="nav-link" data-target="mobile-config">Mobile App Config</a>
             <a class="nav-link" data-target="cron-jobs">Cron Jobs</a>
             <a class="nav-link" data-target="mail-setup">Mail Configuration</a>
         </div>
@@ -38,9 +41,20 @@
 
         <div class="nav-group">
             <div class="nav-header">Mobile App Guide</div>
-            <a class="nav-link" data-target="resident-app">Resident App</a>
-            <a class="nav-link" data-target="guard-app">Guard App</a>
+            <a class="nav-link" data-target="mobile-overview">Mobile App Overview</a>
+            <a class="nav-link" data-target="resident-app">Resident Features</a>
+            <a class="nav-link" data-target="guard-app">Guard Features</a>
             <a class="nav-link" data-target="vendor-app">Vendor & Staff</a>
+            <a class="nav-link" data-target="collector-app">Collector Features</a>
+        </div>
+
+        <div class="nav-group">
+            <div class="nav-header">Features</div>
+            <a class="nav-link" data-target="features-overview">Features Overview</a>
+            <a class="nav-link" data-target="saas-features">SaaS & Multi-Tenancy</a>
+            <a class="nav-link" data-target="billing-features">Billing & Payments</a>
+            <a class="nav-link" data-target="visitor-features">Visitor Management</a>
+            <a class="nav-link" data-target="community-features">Community Features</a>
         </div>
 
         <div class="nav-group">
@@ -54,24 +68,71 @@
     <main class="main-content">
         <!-- Introduction -->
         <section id="introduction" class="active">
+            <div style="text-align: center; margin-bottom: 3rem;">
+                <img src="assets/images/logo_light.png" alt="Societify Logo" style="max-width: 600px; width: 100%; height: auto; margin: 0 auto;">
+            </div>
             <h1>Introduction</h1>
-            <p>Welcome to the <strong>Uniquify</strong> documentation. Uniquify is a comprehensive Society Management System designed to streamline operations for residential communities, offering seamless management of visitors, billing, facilities, and communications.</p>
-            <p>The system consists of a robust <strong>Laravel Backend</strong>, a React-based <strong>Web Admin Dashboard</strong>, and a high-performance <strong>Flutter Mobile Application</strong> supporting 5 distinct user roles: Resident, Guard, Vendor, Staff, and Collector.</p>
+            <p>Welcome to the <strong>Societify</strong> documentation. Societify is a comprehensive <strong>Multi-Tenant SaaS Platform</strong> for Society Management, designed to streamline operations for residential communities, offering seamless management of visitors, billing, facilities, and communications.</p>
             
-            <div class="alert alert-info">
-                <strong>Note:</strong> This merged documentation covers the installation, configuration, and usage of BOTH the web application and the mobile application.
+            <div class="feature-highlight">
+                <div class="feature-highlight-icon">📱</div>
+                <div class="feature-highlight-content">
+                    <h3>Single Mobile App for All Roles</h3>
+                    <p>Societify Mobile is a <strong>unified Flutter application</strong> that supports <strong>9 distinct user roles</strong> in a single app: Super Admin, Society Admin, Sub Admin, Accountant, Resident, Guard, Vendor, Staff, and Collector. Users simply log in with their credentials, and the app automatically routes them to their role-specific dashboard.</p>
+                </div>
+            </div>
+
+            <h2>Platform Architecture</h2>
+            <div class="platform-grid">
+                <div class="platform-card">
+                    <div class="platform-icon">🌐</div>
+                    <h3>Societify Web</h3>
+                    <p><strong>Laravel 12 + React 19 + Inertia.js</strong></p>
+                    <p>Admin Panel & Backend API for Super Admin, Society Admin, Sub Admin, and Accountant roles.</p>
+                </div>
+                <div class="platform-card">
+                    <div class="platform-icon">📱</div>
+                    <h3>Societify Mobile</h3>
+                    <p><strong>Flutter 3.19+ with GetX</strong></p>
+                    <p>Single unified mobile app supporting all 9 user roles with role-based dashboards and features.</p>
+                </div>
             </div>
 
             <h2>Key Features</h2>
-            <ul>
-                <li><strong>Multi-Tenancy:</strong> Manage multiple societies from a single Super Admin dashboard.</li>
-                <li><strong>Role-Based Access:</strong> Granular permissions for Super Admin, Society Admin, Sub Admin, Accountant, Guard, and Residents.</li>
-                <li><strong>Billing & Payments:</strong> Integrated payment gateways (Razorpay, Stripe, PayPal) for subscription and maintenance collection.</li>
-                <li><strong>Visitor Management:</strong> Secure QR-code based visitor entry and exit logs via the Guard App.</li>
-                <li><strong>Complaint System:</strong> Ticket-based support system for residents.</li>
-            </ul>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">☁️</div>
+                    <h3>Multi-Tenant SaaS</h3>
+                    <p>Manage unlimited societies from a single Super Admin dashboard with complete data isolation.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">💳</div>
+                    <h3>Automated Billing</h3>
+                    <p>Auto-generate bills with multiple charge heads, penalties, and integrated payment gateways.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🛡️</div>
+                    <h3>Visitor Security</h3>
+                    <p>QR-code based visitor entry/exit system with pre-approval and real-time notifications.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🏊</div>
+                    <h3>Facility Booking</h3>
+                    <p>Online facility booking with slot management, payments, and conflict-free scheduling.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🎫</div>
+                    <h3>Helpdesk System</h3>
+                    <p>Ticket-based complaint system with staff assignment, tracking, and feedback.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🚨</div>
+                    <h3>SOS Emergency</h3>
+                    <p>One-tap emergency alerts to guards and management with location sharing.</p>
+                </div>
+            </div>
 
-            <div class="row" style="display: flex; gap: 20px; flex-wrap: wrap;">
+            <!-- <div class="row" style="display: flex; gap: 20px; flex-wrap: wrap;">
                 <div style="flex: 1; min-width: 300px;">
                     <img src="assets/images/dashboard-superadmin.png" alt="Super Admin Dashboard" class="screenshot">
                     <p class="img-caption">Figure 1: Super Admin Dashboard</p>
@@ -80,18 +141,20 @@
                     <img src="assets/images/home.png" alt="Mobile App Home" class="screenshot">
                     <p class="img-caption">Figure 2: Mobile App Resident Home</p>
                 </div>
-            </div>
+            </div> -->
         </section>
 
         <!-- System Requirements -->
         <section id="requirements">
             <h1>System Requirements</h1>
-            <p>Before installing Uniquify, ensure your environment meets the following requirements:</p>
+            <p>Before installing Societify, ensure your environment meets the following requirements:</p>
             
             <h2>Backend Server</h2>
             <ul>
-                <li>PHP >= 8.2 (Recommended)</li>
-                <li>MySQL >= 5.7 or MariaDB >= 10.3</li>
+                <li><strong>PHP >= 8.2</strong> (Recommended)</li>
+                <li><strong>Laravel 12</strong> Framework</li>
+                <li><strong>React 19</strong> with Inertia.js</li>
+                <li><strong>MySQL >= 5.7</strong> or <strong>MariaDB >= 10.3</strong> or <strong>PostgreSQL</strong> or <strong>SQLite</strong></li>
                 <li>BCMath PHP Extension</li>
                 <li>Ctype PHP Extension</li>
                 <li>Fileinfo PHP Extension</li>
@@ -102,6 +165,8 @@
                 <li>Tokenizer PHP Extension</li>
                 <li>XML PHP Extension</li>
                 <li>Actively running Cron Jobs</li>
+                <li>Node.js >= 18.x (for frontend build)</li>
+                <li>Composer (PHP dependency manager)</li>
             </ul>
 
             <div class="alert alert-warning">
@@ -110,10 +175,13 @@
 
             <h2>Mobile App Development</h2>
             <ul>
-                <li>Flutter SDK >= 3.10.0</li>
-                <li>Dart SDK >= 3.0.0</li>
+                <li><strong>Flutter SDK >= 3.19.0</strong> (Recommended)</li>
+                <li><strong>Dart SDK >= 3.0.0</strong></li>
+                <li><strong>GetX</strong> state management</li>
                 <li>Android Studio (for Android build)</li>
-                <li>Xcode (for iOS build - macOS only)</li>
+                <li>Xcode >= 14.0 (for iOS build - macOS only)</li>
+                <li>Firebase account (for push notifications)</li>
+                <li>Google Services configuration files</li>
             </ul>
         </section>
 
@@ -135,15 +203,14 @@
                     <p>Open your website URL in the browser (e.g., <code>https://yourdomain.com/install</code>). You will be greeted by the simple setup wizard.</p>
                     
                     <h3>2. CLI Installation (Manual)</h3>
-                    <p>Clone the repository and install dependencies:</p>
-                    <pre><code>git clone https://github.com/codecynon/uniquify-backend.git
-cd uniquify-backend
+                    <p>Extract the project zip file to your server directory and install dependencies:</p>
+                    <pre><code>cd /path-to-your-project
 composer install --optimize-autoloader --no-dev
 cp .env.example .env
 php artisan key:generate
                     </code></pre>
                     
-                    <p>Create a MySQL database and update your <code>.env</code> file. Then run migrations:</p>
+                    <p>Create a MySQL database and update your <code>.env</code> file with database credentials. Then run migrations:</p>
                     <pre><code>php artisan migrate --seed</code></pre>
                     
                     <div class="alert alert-success">
@@ -155,17 +222,142 @@ php artisan key:generate
 
                 <!-- Mobile App Installer -->
                 <div id="mobile-install" class="tab-content">
-                    <h3>Mobile App Setup</h3>
+                    <div class="alert alert-info">
+                        <strong>Prerequisites:</strong> Ensure you have Flutter SDK >= 3.19.0 installed. Check your Flutter version with <code>flutter --version</code>
+                    </div>
+
+                    <h3>1. Flutter Setup</h3>
                     <p>Navigate to the mobile app directory and install packages:</p>
                     <pre><code>cd mobile-app
 flutter pub get</code></pre>
 
-                    <h3>Firebase Setup</h3>
-                    <p>Place your <code>google-services.json</code> (Android) and <code>GoogleService-Info.plist</code> (iOS) in the respective directories:</p>
+                    <div class="alert alert-warning">
+                        <strong>Important:</strong> Make sure you're using Flutter 3.19.0 or higher. Update Flutter if needed: <code>flutter upgrade</code>
+                    </div>
+
+                    <h3>2. API URL Configuration</h3>
+                    <p>Configure the API base URL in <code>lib/constants/api_constants.dart</code>:</p>
+                    <pre><code>class ApiConstants {
+  /// Production API URL - Change this to your backend URL
+  static const String baseUrl = 'https://yourdomain.com/api/v1';
+  
+  /// Set to false to use production API, true for local development
+  static const bool useLocalHost = false;
+
+  /// Local development URL (used when useLocalHost is true)
+  static const String localApiUrl = 'http://10.0.2.2:8000/api/v1'; // Android Emulator
+  // static const String localApiUrl = 'http://192.168.x.x:8000/api/v1'; // Physical Device
+
+  /// Set to true when testing on a physical device connected to local network
+  static const bool usePhysicalDevice = false;
+}</code></pre>
+
+                    <div class="alert alert-warning">
+                        <strong>Before Release:</strong> Always set <code>useLocalHost = false</code> and update <code>baseUrl</code> to your production API URL before building for Play Store/App Store.
+                    </div>
+
+                    <h3>3. App Logo & Icons Configuration</h3>
+                    
+                    <h4>Android App Icon</h4>
+                    <p>Replace the app icon files in the following directories:</p>
                     <ul>
-                        <li>Android: <code>android/app/google-services.json</code></li>
-                        <li>iOS: <code>ios/Runner/GoogleService-Info.plist</code></li>
+                        <li><code>android/app/src/main/res/mipmap-hdpi/ic_launcher.png</code> (72x72)</li>
+                        <li><code>android/app/src/main/res/mipmap-mdpi/ic_launcher.png</code> (48x48)</li>
+                        <li><code>android/app/src/main/res/mipmap-xhdpi/ic_launcher.png</code> (96x96)</li>
+                        <li><code>android/app/src/main/res/mipmap-xxhdpi/ic_launcher.png</code> (144x144)</li>
+                        <li><code>android/app/src/main/res/mipmap-xxxhdpi/ic_launcher.png</code> (192x192)</li>
+                        <li><code>android/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml</code> (Adaptive icon)</li>
                     </ul>
+
+                    <h4>iOS App Icon</h4>
+                    <p>Replace app icons in <code>ios/Runner/Assets.xcassets/AppIcon.appiconset/</code>:</p>
+                    <ul>
+                        <li>20x20, 29x29, 40x40, 60x60, 76x76, 83.5x83.5, 1024x1024 sizes</li>
+                        <li>Or use Xcode to set app icons: Open <code>ios/Runner.xcworkspace</code> → Select Runner target → App Icons</li>
+                    </ul>
+
+                    <div class="alert alert-info">
+                        <strong>Tip:</strong> Use online tools like <code>flutter_launcher_icons</code> package to generate all icon sizes automatically. Add to <code>pubspec.yaml</code> and run <code>flutter pub run flutter_launcher_icons</code>
+                    </div>
+
+                    <h3>4. App Name & Package Configuration</h3>
+                    
+                    <h4>Android Package Name</h4>
+                    <p>Update package name in <code>android/app/build.gradle</code>:</p>
+                    <pre><code>android {
+    defaultConfig {
+        applicationId "com.yourcompany.societify" // Change this
+        ...
+    }
+}</code></pre>
+
+                    <p>Also update package name in <code>AndroidManifest.xml</code> files and Java/Kotlin source files.</p>
+
+                    <h4>iOS Bundle Identifier</h4>
+                    <p>Update bundle identifier in <code>ios/Runner.xcodeproj/project.pbxproj</code> or via Xcode:</p>
+                    <ul>
+                        <li>Open <code>ios/Runner.xcworkspace</code> in Xcode</li>
+                        <li>Select Runner target → General tab</li>
+                        <li>Change Bundle Identifier to <code>com.yourcompany.societify</code></li>
+                    </ul>
+
+                    <h4>App Display Name</h4>
+                    <p>Update app name in:</p>
+                    <ul>
+                        <li><strong>Android:</strong> <code>android/app/src/main/AndroidManifest.xml</code> → <code>android:label</code></li>
+                        <li><strong>iOS:</strong> <code>ios/Runner/Info.plist</code> → <code>CFBundleDisplayName</code></li>
+                    </ul>
+
+                    <h3>5. Firebase Setup</h3>
+                    <p>Place your Firebase configuration files in the respective directories:</p>
+                    <ul>
+                        <li><strong>Android:</strong> <code>android/app/google-services.json</code></li>
+                        <li><strong>iOS:</strong> <code>ios/Runner/GoogleService-Info.plist</code></li>
+                    </ul>
+
+                    <div class="alert alert-warning">
+                        <strong>Important:</strong> Make sure the Firebase project package name/bundle ID matches your app's package name/bundle identifier.
+                    </div>
+
+                    <h3>6. Build Configuration</h3>
+                    
+                    <h4>Android Signing</h4>
+                    <p>Configure app signing in <code>android/app/build.gradle</code>:</p>
+                    <pre><code>android {
+    signingConfigs {
+        release {
+            keyAlias 'your-key-alias'
+            keyPassword 'your-key-password'
+            storeFile file('path/to/keystore.jks')
+            storePassword 'your-store-password'
+        }
+    }
+    buildTypes {
+        release {
+            signingConfig signingConfigs.release
+        }
+    }
+}</code></pre>
+
+                    <h4>iOS Signing</h4>
+                    <p>Configure signing in Xcode:</p>
+                    <ul>
+                        <li>Open <code>ios/Runner.xcworkspace</code> in Xcode</li>
+                        <li>Select Runner target → Signing & Capabilities</li>
+                        <li>Select your development team</li>
+                        <li>Xcode will automatically manage provisioning profiles</li>
+                    </ul>
+
+                    <h3>7. Build Commands</h3>
+                    <p>After configuration, build your app:</p>
+                    <pre><code># Android APK
+flutter build apk --release
+
+# Android App Bundle (for Play Store)
+flutter build appbundle --release
+
+# iOS (requires macOS and Xcode)
+flutter build ios --release</code></pre>
                 </div>
             </div>
         </section>
@@ -179,10 +371,13 @@ flutter pub get</code></pre>
             <p class="img-caption">Figure 3: System Settings & Configuration</p>
 
             <h2>Payment Gateways</h2>
+            <p>Societify supports 5 payment gateways. Configure them in your <code>.env</code> file:</p>
             <div class="tabs">
                 <button class="tab-btn active" data-tab="razorpay">Razorpay</button>
                 <button class="tab-btn" data-tab="stripe">Stripe</button>
                 <button class="tab-btn" data-tab="paypal">PayPal</button>
+                <button class="tab-btn" data-tab="payu">PayU</button>
+                <button class="tab-btn" data-tab="cashfree">Cashfree</button>
             </div>
             
             <div class="tab-wrapper">
@@ -202,54 +397,31 @@ STRIPE_SECRET=sk_test_...</code></pre>
 PAYPAL_CLIENT_ID=...
 PAYPAL_CLIENT_SECRET=...</code></pre>
                 </div>
+                <div id="payu" class="tab-content">
+                    <h3>PayU Configuration</h3>
+                    <pre><code>PAYU_MERCHANT_KEY=...
+PAYU_MERCHANT_SALT=...</code></pre>
+                </div>
+                <div id="cashfree" class="tab-content">
+                    <h3>Cashfree Configuration</h3>
+                    <pre><code>CASHFREE_APP_ID=...
+CASHFREE_SECRET_KEY=...</code></pre>
+                </div>
             </div>
-        </section>
 
-        <section id="mobile-config">
-            <h1>Mobile App Configuration</h1>
-            <p>Configure the connection settings in <code>lib/constants/api_constants.dart</code> to switch between local development and production environments.</p>
-
-            <pre><code>class ApiConstants {
-  /// Set to false to use production API, true for local development
-  static const bool useLocalHost = true;
-
-  /// Production API URL (used when useLocalHost is false)
-  static const String productionApiUrl = 'https://uniquify.uniquedeveloper.in';
-
-  /// Set to true when testing on a physical device connected to local network
-  static const bool usePhysicalDevice = false;
-}</code></pre>
-
-            <h3>Configuration Guide:</h3>
-            <table style="width: 100%; text-align: left; border-collapse: collapse; margin-top: 10px; border: 1px solid #e2e8f0;">
-                <thead>
-                    <tr style="border-bottom: 2px solid #e2e8f0; background: #f8fafc;">
-                        <th style="padding: 12px;">Variable</th>
-                        <th style="padding: 12px;">Description</th>
-                        <th style="padding: 12px;">When to use TRUE</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr style="border-bottom: 1px solid #e2e8f0;">
-                        <td style="padding: 12px;"><code>useLocalHost</code></td>
-                        <td style="padding: 12px;">Switches between Local API and Production API.</td>
-                        <td style="padding: 12px;">For Development.</td>
-                    </tr>
-                    <tr style="border-bottom: 1px solid #e2e8f0;">
-                        <td style="padding: 12px;"><code>usePhysicalDevice</code></td>
-                        <td style="padding: 12px;">Changes localhost IP: <code>10.0.2.2</code> (Emulator) vs <code>192.168.x.x</code> (Real Device).</td>
-                        <td style="padding: 12px;">When running the app on a real phone via USB/WiFi.</td>
-                    </tr>
-                </tbody>
-            </table>
-            <div class="alert alert-warning">
-                <strong>Deployment Note:</strong> Always set <code>useLocalHost = false</code> before building the app for release (Play Store/App Store).
-            </div>
+            <h2>Notification Services</h2>
+            <p>Configure multiple notification channels for better reach:</p>
+            <ul>
+                <li><strong>Firebase FCM:</strong> Push notifications for mobile app</li>
+                <li><strong>Email SMTP:</strong> Email notifications</li>
+                <li><strong>SMS Gateways:</strong> Twilio, Msg91, Textlocal</li>
+                <li><strong>WhatsApp:</strong> Twilio WhatsApp API, Meta WhatsApp Business API</li>
+            </ul>
         </section>
 
         <section id="cron-jobs">
             <h1>Cron Jobs</h1>
-            <p>Uniqify requires a single Cron entry to run scheduled tasks (like subscription checks, cleanup).</p>
+            <p>Societify requires a single Cron entry to run scheduled tasks (like subscription checks, cleanup).</p>
 
             <pre><code>* * * * * cd /path-to-your-project && php artisan schedule:run >> /dev/null 2>&1</code></pre>
         </section>
@@ -346,10 +518,93 @@ MAIL_FROM_NAME="${APP_NAME}"</code></pre>
             <img src="assets/images/soc-announcements.png" alt="Announcements" class="screenshot">
         </section>
 
+        <!-- Mobile App Overview -->
+        <section id="mobile-overview">
+            <h1>Mobile App Overview</h1>
+            <p>Societify Mobile is a <strong>single unified Flutter application</strong> that supports all 9 user roles. Users log in with their credentials, and the app automatically displays the appropriate dashboard and features based on their role.</p>
+
+            <div class="alert alert-info">
+                <strong>Important:</strong> All roles (Resident, Guard, Vendor, Staff, Collector, Tenant, etc.) are accessed through the <strong>same mobile app</strong>. The app automatically adapts based on the logged-in user's role.
+            </div>
+
+            <h2>Supported User Roles (9 Types)</h2>
+            <div class="roles-grid">
+                <div class="role-card">
+                    <div class="role-icon">👑</div>
+                    <h3>Super Admin</h3>
+                    <p>Platform owner - manages all societies, subscriptions, fees</p>
+                    <span class="role-badge web">Web Only</span>
+                </div>
+                <div class="role-card">
+                    <div class="role-icon">🏢</div>
+                    <h3>Society Admin</h3>
+                    <p>Society owner - full control of their society</p>
+                    <span class="role-badge web">Web Only</span>
+                </div>
+                <div class="role-card">
+                    <div class="role-icon">👤</div>
+                    <h3>Sub Admin</h3>
+                    <p>Limited administrative access with customizable permissions</p>
+                    <span class="role-badge web">Web Only</span>
+                </div>
+                <div class="role-card">
+                    <div class="role-icon">💰</div>
+                    <h3>Accountant</h3>
+                    <p>Financial management - bills, payments, reports</p>
+                    <span class="role-badge web">Web Only</span>
+                </div>
+                <div class="role-card">
+                    <div class="role-icon">🏠</div>
+                    <h3>Resident</h3>
+                    <p>Unit owners - full resident features</p>
+                    <span class="role-badge mobile">Mobile App</span>
+                </div>
+                <div class="role-card">
+                    <div class="role-icon">🔑</div>
+                    <h3>Tenant</h3>
+                    <p>Rental unit management with owner collaboration</p>
+                    <span class="role-badge mobile">Mobile App</span>
+                </div>
+                <div class="role-card">
+                    <div class="role-icon">👮</div>
+                    <h3>Guard</h3>
+                    <p>Security personnel - visitor management</p>
+                    <span class="role-badge mobile">Mobile App</span>
+                </div>
+                <div class="role-card">
+                    <div class="role-icon">🔧</div>
+                    <h3>Vendor</h3>
+                    <p>External service providers - job assignments</p>
+                    <span class="role-badge mobile">Mobile App</span>
+                </div>
+                <div class="role-card">
+                    <div class="role-icon">🧑‍🔧</div>
+                    <h3>Staff</h3>
+                    <p>Maintenance staff - ticket management</p>
+                    <span class="role-badge mobile">Mobile App</span>
+                </div>
+                <div class="role-card">
+                    <div class="role-icon">💵</div>
+                    <h3>Collector</h3>
+                    <p>Door-to-door payment collectors</p>
+                    <span class="role-badge mobile">Mobile App</span>
+                </div>
+            </div>
+
+            <h2>Mobile App Technical Features</h2>
+            <ul>
+                <li><strong>Authentication:</strong> Phone number-based login with OTP verification, password-based login, secure token storage, auto-login</li>
+                <li><strong>Push Notifications:</strong> Firebase Cloud Messaging (FCM) for bill reminders, visitor alerts, ticket updates, announcements, booking confirmations, emergency alerts</li>
+                <li><strong>Offline Support:</strong> Offline data caching, pull-to-refresh, infinite scroll pagination</li>
+                <li><strong>Performance:</strong> Image compression, network status detection, responsive UI</li>
+                <li><strong>Future Ready:</strong> Dark mode ready, multi-language ready</li>
+            </ul>
+        </section>
+
         <!-- Mobile App Guide -->
         <section id="resident-app">
-            <h1>Resident Mobile App</h1>
-            <p>Residents are the primary users who live in the society and access features managed by the Society Admin.</p>
+            <h1>Resident Features (24 Screens)</h1>
+            <p>Residents are the primary users who live in the society. They access all resident features through the unified Societify Mobile app.</p>
             
             <div class="row" style="display: flex; gap: 20px; flex-wrap: wrap;">
                 <div style="flex: 1; min-width: 250px;">
@@ -362,13 +617,79 @@ MAIL_FROM_NAME="${APP_NAME}"</code></pre>
                 </div>
             </div>
 
-            <h3>Key Features</h3>
+            <h2>Dashboard</h2>
             <ul>
-                <li><strong>Bill Payment:</strong> View and pay maintenance bills online via Razorpay.</li>
-                <li><strong>Facility Booking:</strong> Book amenities like Gym or Pool and pay instantly.</li>
-                <li><strong>Visitor Pre-Approval:</strong> Generate entry codes for guests to speed up gate entry.</li>
-                <li><strong>Complaints:</strong> Raise tickets for maintenance issues (Plumbing, Electrical, etc.).</li>
-                <li><strong>Community:</strong> View announcements, polls, and access the resident directory.</li>
+                <li>Quick stats overview</li>
+                <li>Pending bills summary</li>
+                <li>Recent announcements</li>
+                <li>Upcoming bookings</li>
+                <li>Open tickets status</li>
+            </ul>
+
+            <h2>💰 Bills & Payments</h2>
+            <ul>
+                <li>View all bills with status</li>
+                <li>Bill detail with breakdown</li>
+                <li><strong>Online payment via Razorpay, Stripe, PayPal, PayU, Cashfree</strong></li>
+                <li>Payment history</li>
+                <li>Download receipts</li>
+            </ul>
+
+            <h2>🚪 Visitor Management</h2>
+            <ul>
+                <li>Pre-approve expected visitors</li>
+                <li>Generate shareable QR codes</li>
+                <li>View visitor history</li>
+                <li>Real-time entry notifications</li>
+                <li>Reject unexpected visitors</li>
+            </ul>
+
+            <h2>🏊 Facility Booking</h2>
+            <ul>
+                <li>Browse available facilities</li>
+                <li>View facility details</li>
+                <li>Book time slots</li>
+                <li><strong>Online payment for bookings</strong></li>
+                <li>View/cancel bookings</li>
+            </ul>
+
+            <h2>🔧 Maintenance Tickets</h2>
+            <ul>
+                <li>Create tickets with photos</li>
+                <li>Category & priority selection</li>
+                <li>Track ticket status</li>
+                <li>Timeline with comments</li>
+                <li>Rate resolution</li>
+            </ul>
+
+            <h2>📢 Announcements</h2>
+            <ul>
+                <li>View all notices</li>
+                <li>Priority highlighting</li>
+                <li>Acknowledge notices</li>
+                <li>Attachment downloads</li>
+            </ul>
+
+            <h2>👨‍👩‍👧‍👦 Community</h2>
+            <ul>
+                <li>Community feed</li>
+                <li>Create posts (text/image)</li>
+                <li>Like and comment</li>
+                <li>Community groups</li>
+            </ul>
+
+            <h2>🏡 Household Management</h2>
+            <ul>
+                <li>Add/edit family members</li>
+                <li>Tenant management</li>
+                <li>Emergency contacts</li>
+            </ul>
+
+            <h2>📖 Directory</h2>
+            <ul>
+                <li>Resident directory</li>
+                <li>Search and filter</li>
+                <li>Contact information</li>
             </ul>
 
             <img src="assets/images/bills.png" alt="Bills Management" class="screenshot" style="max-height: 500px; width: auto; display: block; margin: 0 auto;">
@@ -376,36 +697,248 @@ MAIL_FROM_NAME="${APP_NAME}"</code></pre>
         </section>
 
         <section id="guard-app">
-            <h1>Guard App</h1>
-            <p>Designed for security personnel to manage visitor entry/exit and emergency alerts.</p>
+            <h1>Guard Features (6 Screens)</h1>
+            <p>Designed for security personnel to manage visitor entry/exit and emergency alerts. Guards access these features through the unified Societify Mobile app.</p>
 
             <img src="assets/images/guard.png" alt="Guard Dashboard" class="screenshot" style="max-height: 500px; width: auto; display: block; margin: 0 auto;">
 
-            <h3>Key Features</h3>
+            <h2>Key Features</h2>
             <ul>
-                <li><strong>QR Code Scanning:</strong> Quickly scan pre-approved visitor codes.</li>
-                <li><strong>Manual Entry:</strong> Register unexpected visitors and vehicle details.</li>
-                <li><strong>Emergency Alerts:</strong> Receive and respond to SOS alerts from residents.</li>
-                <li><strong>Live Monitoring:</strong> View expected visitors and current visitors inside.</li>
+                <li><strong>Today's Expected Visitors:</strong> View all pre-approved visitors for the day</li>
+                <li><strong>QR Code Scanner:</strong> Quickly scan pre-approved visitor codes for instant entry</li>
+                <li><strong>Manual Entry:</strong> Register unexpected visitors and vehicle details</li>
+                <li><strong>Visitor Check-in/Check-out:</strong> Digital log maintenance for all entries and exits</li>
+                <li><strong>Visitor Logs:</strong> Complete history of all visitors with search and filter</li>
+                <li><strong>Emergency Alert System:</strong> Receive and respond to SOS alerts from residents</li>
+                <li><strong>Live Monitoring:</strong> View expected visitors and current visitors inside the society</li>
+                <li><strong>Photo Capture:</strong> Capture visitor photos at entry for security records</li>
             </ul>
         </section>
 
         <section id="vendor-app">
-            <h1>Vendor & Staff App</h1>
-            <p>For service providers and society staff assigned to maintenance jobs.</p>
+            <h1>Vendor & Staff Features</h1>
+            <p>For service providers and society staff assigned to maintenance jobs. Both roles access their features through the unified Societify Mobile app.</p>
             
-            <h3>Vendor Features</h3>
+            <h2>🔧 Vendor Features (4 Screens)</h2>
             <ul>
-                <li><strong>Job Board:</strong> View assigned maintenance tickets.</li>
-                <li><strong>Status Updates:</strong> Mark jobs as "In Progress" or "Resolved".</li>
-                <li><strong>Earnings:</strong> Track payments and completed jobs.</li>
+                <li><strong>Job Board:</strong> View assigned maintenance tickets</li>
+                <li><strong>Accept/Decline Jobs:</strong> Review and accept job assignments</li>
+                <li><strong>Status Updates:</strong> Mark jobs as "In Progress" or "Resolved"</li>
+                <li><strong>Completion Confirmation:</strong> Submit work completion with photos</li>
+                <li><strong>Payment History:</strong> Track payments and completed jobs</li>
+                <li><strong>Total Earnings:</strong> View earnings summary and payment status</li>
             </ul>
 
-            <h3>Collector Features</h3>
+            <h2>🧑‍🔧 Staff Features (5 Screens)</h2>
             <ul>
-                <li><strong>Door-to-Door Collection:</strong> Collect maintenance dues in cash.</li>
-                <li><strong>Digital Receipts:</strong> Generate receipts instantly for residents.</li>
-                <li><strong>Outstanding List:</strong> View list of flats with pending dues.</li>
+                <li><strong>Assigned Tickets View:</strong> See all tickets assigned to you</li>
+                <li><strong>Filter by Status/Priority:</strong> Organize tickets efficiently</li>
+                <li><strong>Update Ticket Status:</strong> Mark tickets as "In Progress" or "Resolved"</li>
+                <li><strong>Add Resolution Comments:</strong> Provide updates and notes</li>
+                <li><strong>Daily Activity Logging:</strong> Track daily work activities</li>
+                <li><strong>Report Submission:</strong> Submit work reports with photos</li>
+                <li><strong>Past Reports View:</strong> Access historical work reports</li>
+            </ul>
+        </section>
+
+        <section id="collector-app">
+            <h1>Collector Features (5 Screens)</h1>
+            <p>For door-to-door payment collectors. Collectors access these features through the unified Societify Mobile app.</p>
+
+            <h2>Key Features</h2>
+            <ul>
+                <li><strong>Today's Collections Overview:</strong> Quick view of daily collection summary</li>
+                <li><strong>Pending Bills in Assigned Area:</strong> View list of flats with pending dues</li>
+                <li><strong>Collect Payment:</strong> Accept payments via Cash or UPI</li>
+                <li><strong>Mark Bills as Collected:</strong> Update bill status after collection</li>
+                <li><strong>Generate Receipt:</strong> Generate digital receipts instantly for residents</li>
+                <li><strong>Collection History:</strong> Complete history of all collections</li>
+                <li><strong>Wallet Balance & Transactions:</strong> Track wallet balance and all transactions</li>
+                <li><strong>Cash Remittance Tracking:</strong> Record cash remittances to society</li>
+                <li><strong>Commission/Earnings View:</strong> View commission and total earnings</li>
+            </ul>
+        </section>
+
+        <!-- Features Overview -->
+        <section id="features-overview">
+            <h1>Features Overview</h1>
+            <p>Societify is a comprehensive SaaS platform with extensive features for managing residential communities. Below is a complete overview of all available features.</p>
+
+            <h2>Platform Statistics</h2>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-number">9</div>
+                    <div class="stat-label">User Roles</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">44+</div>
+                    <div class="stat-label">Mobile Screens</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">60+</div>
+                    <div class="stat-label">Web Controllers</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">70+</div>
+                    <div class="stat-label">Database Tables</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">5</div>
+                    <div class="stat-label">Payment Gateways</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">3</div>
+                    <div class="stat-label">SMS Gateways</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SaaS Features -->
+        <section id="saas-features">
+            <h1>SaaS & Multi-Tenancy Features</h1>
+            <p>Societify is built as a true multi-tenant SaaS platform, allowing you to manage unlimited societies from a single installation.</p>
+
+            <h2>Multi-Tenancy Architecture</h2>
+            <ul>
+                <li><strong>Unlimited Societies:</strong> Manage multiple societies from a single Super Admin dashboard</li>
+                <li><strong>Data Isolation:</strong> Complete data security and isolation between societies</li>
+                <li><strong>White-Label Ready:</strong> Custom branding for each society</li>
+                <li><strong>Subscription-Based:</strong> Flexible subscription plans for each society</li>
+            </ul>
+
+            <h2>Subscription Management</h2>
+            <ul>
+                <li><strong>Multiple Plans:</strong> Free, Basic, Premium, Enterprise tiers</li>
+                <li><strong>Plan Features:</strong> Max units, facilities, storage, support levels</li>
+                <li><strong>Flexible Billing:</strong> Monthly, Quarterly, Annually</li>
+                <li><strong>Platform Fee Configuration:</strong> Customizable platform fees</li>
+                <li><strong>Society Approval Workflow:</strong> Approve/reject society registrations</li>
+                <li><strong>Suspension Management:</strong> Suspend/reactivate society accounts</li>
+                <li><strong>Platform Analytics:</strong> Platform-wide analytics dashboard</li>
+            </ul>
+        </section>
+
+        <!-- Billing Features -->
+        <section id="billing-features">
+            <h1>Billing & Payment Features</h1>
+            <p>Comprehensive automated billing system with multiple payment gateway integrations.</p>
+
+            <h2>Automated Billing System</h2>
+            <ul>
+                <li><strong>Auto Bill Generation:</strong> Recurring cycles with automatic generation</li>
+                <li><strong>Multiple Charge Heads:</strong>
+                    <ul>
+                        <li>Maintenance charges</li>
+                        <li>Water supply charges</li>
+                        <li>Electricity common charges</li>
+                        <li>Generator charges</li>
+                        <li>Parking charges</li>
+                        <li>Lift maintenance</li>
+                        <li>Security charges</li>
+                        <li>Sinking fund contribution</li>
+                    </ul>
+                </li>
+                <li><strong>Bill Cycles:</strong> Monthly, Quarterly, Bi-Annual, Annual</li>
+                <li><strong>Auto-Generate on Specific Day:</strong> Schedule bills to generate automatically</li>
+                <li><strong>Penalty Calculation:</strong> Automatic late payment penalties</li>
+                <li><strong>Interest on Delayed Payments:</strong> Configurable interest rates</li>
+                <li><strong>GST/Tax Support:</strong> Built-in tax calculation</li>
+                <li><strong>Invoice PDF Generation:</strong> Professional PDF invoices</li>
+                <li><strong>Partial Payment Support:</strong> Accept partial payments</li>
+                <li><strong>Bulk Bill Approval:</strong> Approve multiple bills at once</li>
+            </ul>
+
+            <h2>Payment Gateway Integration</h2>
+            <div class="gateway-grid">
+                <div class="gateway-card">
+                    <h3>✅ Razorpay</h3>
+                    <p>Fully integrated with Razorpay for seamless payments</p>
+                </div>
+                <div class="gateway-card">
+                    <h3>✅ Stripe</h3>
+                    <p>International payment processing support</p>
+                </div>
+                <div class="gateway-card">
+                    <h3>✅ PayPal</h3>
+                    <p>Global payment gateway integration</p>
+                </div>
+                <div class="gateway-card">
+                    <h3>✅ PayU</h3>
+                    <p>Popular payment gateway for regional markets</p>
+                </div>
+                <div class="gateway-card">
+                    <h3>✅ Cashfree</h3>
+                    <p>Indian payment gateway with UPI support</p>
+                </div>
+            </div>
+
+            <h2>Collector Management</h2>
+            <ul>
+                <li><strong>Collector Wallet System:</strong> Digital wallet for collectors</li>
+                <li><strong>Cash/UPI Collection Tracking:</strong> Track all collection methods</li>
+                <li><strong>Collection Remittance:</strong> Remit collections to society</li>
+                <li><strong>Commission/Incentive Tracking:</strong> Automatic commission calculation</li>
+                <li><strong>Daily Collection Reports:</strong> Detailed daily reports</li>
+                <li><strong>Building-wise Assignment:</strong> Assign collectors to specific buildings</li>
+            </ul>
+        </section>
+
+        <!-- Visitor Features -->
+        <section id="visitor-features">
+            <h1>Visitor Management Features</h1>
+            <p>Comprehensive visitor security system with QR code-based entry/exit tracking.</p>
+
+            <h2>Visitor Security System</h2>
+            <ul>
+                <li><strong>QR Code-based Entry/Exit:</strong> Secure QR code system for visitor entry</li>
+                <li><strong>Pre-approval by Residents:</strong> Residents can pre-approve visitors from mobile app</li>
+                <li><strong>Expected Visitor Scheduling:</strong> Schedule visitors in advance</li>
+                <li><strong>Walk-in Visitor Registration:</strong> Register unexpected visitors at gate</li>
+                <li><strong>Purpose Tracking:</strong> Guest, Delivery, Cab, Service categories</li>
+                <li><strong>Vehicle Number Recording:</strong> Track visitor vehicles</li>
+                <li><strong>Photo Capture at Entry:</strong> Security photo capture</li>
+                <li><strong>Real-time Notifications:</strong> Instant notifications to residents</li>
+                <li><strong>Digital Logs:</strong> Complete entry/exit history</li>
+            </ul>
+        </section>
+
+        <!-- Community Features -->
+        <section id="community-features">
+            <h1>Community Features</h1>
+            <p>Engage residents with social features, announcements, and community building tools.</p>
+
+            <h2>Announcement System</h2>
+            <ul>
+                <li><strong>Society-wide Announcements:</strong> Broadcast to all residents</li>
+                <li><strong>Building-specific Targeting:</strong> Target specific buildings</li>
+                <li><strong>Priority Levels:</strong> Normal, Important, Urgent</li>
+                <li><strong>Scheduled Announcements:</strong> Schedule future announcements</li>
+                <li><strong>Read Receipt Tracking:</strong> Track who has read announcements</li>
+                <li><strong>Acknowledgement Requests:</strong> Request acknowledgements</li>
+                <li><strong>Multi-channel Notifications:</strong> Push/Email/SMS/WhatsApp</li>
+                <li><strong>Attachment Support:</strong> Attach documents and images</li>
+            </ul>
+
+            <h2>Social Features</h2>
+            <ul>
+                <li><strong>Social Posts:</strong> Text, images, and videos</li>
+                <li><strong>Like and Comment System:</strong> Engage with community posts</li>
+                <li><strong>Community Groups/Forums:</strong> Create and join groups</li>
+                <li><strong>Resident Polls and Surveys:</strong> Conduct community polls</li>
+                <li><strong>Event Creation and RSVPs:</strong> Organize and manage events</li>
+                <li><strong>Lost & Found Posts:</strong> Community lost and found board</li>
+                <li><strong>Buy/Sell Marketplace:</strong> Community marketplace</li>
+                <li><strong>Content Moderation:</strong> Admin moderation tools</li>
+            </ul>
+
+            <h2>Emergency Alert System</h2>
+            <ul>
+                <li><strong>Panic Button:</strong> One-tap emergency alerts</li>
+                <li><strong>Real-time Alerts:</strong> Instant alerts to all guards</li>
+                <li><strong>Emergency Type Classification:</strong> Categorize emergency types</li>
+                <li><strong>Location Tracking:</strong> Share location with alerts</li>
+                <li><strong>Alert History:</strong> Complete emergency history</li>
+                <li><strong>Response Tracking:</strong> Track guard responses</li>
             </ul>
         </section>
 
