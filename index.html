@@ -28,7 +28,7 @@
 
         <div class="nav-group">
             <div class="nav-header">Configuration</div>
-            <a class="nav-link" data-target="env-setup">Environment Setup</a>
+            <a class="nav-link" data-target="env-setup">System Settings</a>
             <a class="nav-link" data-target="cron-jobs">Cron Jobs</a>
             <a class="nav-link" data-target="mail-setup">Mail Configuration</a>
         </div>
@@ -58,9 +58,13 @@
         </div>
 
         <div class="nav-group">
+            <div class="nav-header">Security</div>
+            <a class="nav-link" data-target="security-notes">Security Notes</a>
+        </div>
+
+        <div class="nav-group">
             <div class="nav-header">Development</div>
             <a class="nav-link" data-target="folder-structure">Folder Structure</a>
-            <a class="nav-link" data-target="api-docs">API Documentation</a>
             <a class="nav-link" data-target="razorpay-integration">Razorpay Integration</a>
         </div>
     </nav>
@@ -223,10 +227,16 @@ php artisan key:generate
                 <!-- Mobile App Installer -->
                 <div id="mobile-install" class="tab-content">
                     <div class="alert alert-info">
-                        <strong>Prerequisites:</strong> Ensure you have Flutter SDK >= 3.19.0 installed. Check your Flutter version with <code>flutter --version</code>
+                        <strong>Prerequisites:</strong> Install Flutter SDK (3.19+ recommended) and run <code>flutter doctor</code> until it shows no blocking issues.
                     </div>
 
                     <h3>1. Flutter Setup</h3>
+                    <p>Install Flutter for your OS:</p>
+                    <ul>
+                        <li><strong>Windows:</strong> Download + install from <code>https://docs.flutter.dev/get-started/install/windows</code></li>
+                        <li><strong>macOS:</strong> Download + install from <code>https://docs.flutter.dev/get-started/install/macos</code></li>
+                        <li><strong>Linux:</strong> Download + install from <code>https://docs.flutter.dev/get-started/install/linux</code></li>
+                    </ul>
                     <p>Navigate to the mobile app directory and install packages:</p>
                     <pre><code>cd mobile-app
 flutter pub get</code></pre>
@@ -236,24 +246,14 @@ flutter pub get</code></pre>
                     </div>
 
                     <h3>2. API URL Configuration</h3>
-                    <p>Configure the API base URL in <code>lib/constants/api_constants.dart</code>:</p>
+                    <p>Configure the API base URL in <code>lib/constants/api_constants.dart</code> (single base URL):</p>
                     <pre><code>class ApiConstants {
   /// Production API URL - Change this to your backend URL
-  static const String baseUrl = 'https://yourdomain.com/api/v1';
-  
-  /// Set to false to use production API, true for local development
-  static const bool useLocalHost = false;
-
-  /// Local development URL (used when useLocalHost is true)
-  static const String localApiUrl = 'http://10.0.2.2:8000/api/v1'; // Android Emulator
-  // static const String localApiUrl = 'http://192.168.x.x:8000/api/v1'; // Physical Device
-
-  /// Set to true when testing on a physical device connected to local network
-  static const bool usePhysicalDevice = false;
+  static const String baseUrl = 'https://yourdomain.com/api';
 }</code></pre>
 
                     <div class="alert alert-warning">
-                        <strong>Before Release:</strong> Always set <code>useLocalHost = false</code> and update <code>baseUrl</code> to your production API URL before building for Play Store/App Store.
+                        <strong>Before Release:</strong> Ensure <code>baseUrl</code> points to your production backend.
                     </div>
 
                     <h3>3. App Logo & Icons Configuration</h3>
@@ -283,11 +283,11 @@ flutter pub get</code></pre>
                     <h3>4. App Name & Package Configuration</h3>
                     
                     <h4>Android Package Name</h4>
-                    <p>Update package name in <code>android/app/build.gradle</code>:</p>
+                    <p>Update package name in <code>android/app/build.gradle.kts</code>:</p>
                     <pre><code>android {
     defaultConfig {
-        applicationId "com.yourcompany.societify" // Change this
-        ...
+        applicationId = "com.yourcompany.societify" // Change this
+        // ...
     }
 }</code></pre>
 
@@ -322,19 +322,19 @@ flutter pub get</code></pre>
                     <h3>6. Build Configuration</h3>
                     
                     <h4>Android Signing</h4>
-                    <p>Configure app signing in <code>android/app/build.gradle</code>:</p>
+                    <p>Configure app signing in <code>android/app/build.gradle.kts</code>:</p>
                     <pre><code>android {
     signingConfigs {
-        release {
-            keyAlias 'your-key-alias'
-            keyPassword 'your-key-password'
-            storeFile file('path/to/keystore.jks')
-            storePassword 'your-store-password'
+        create("release") {
+            keyAlias = "your-key-alias"
+            keyPassword = "your-key-password"
+            storeFile = file("path/to/keystore.jks")
+            storePassword = "your-store-password"
         }
     }
     buildTypes {
-        release {
-            signingConfig signingConfigs.release
+        getByName("release") {
+            signingConfig = signingConfigs.getByName("release")
         }
     }
 }</code></pre>
@@ -364,58 +364,38 @@ flutter build ios --release</code></pre>
 
         <!-- Configuration -->
         <section id="env-setup">
-            <h1>Environment Setup</h1>
-            <p>Detailed configuration for third-party services in the Backend.</p>
+            <h1>System Settings (Database-driven)</h1>
+            <p>All operational configuration (payments, mail, SMS/WhatsApp, etc.) is managed in the <strong>web dashboard settings</strong> and stored in the <strong>database</strong>. These values are <strong>not configured in <code>.env</code></strong>.</p>
 
             <img src="assets/images/settings.png" alt="System Settings" class="screenshot">
             <p class="img-caption">Figure 3: System Settings & Configuration</p>
 
-            <h2>Payment Gateways</h2>
-            <p>Societify supports 5 payment gateways. Configure them in your <code>.env</code> file:</p>
-            <div class="tabs">
-                <button class="tab-btn active" data-tab="razorpay">Razorpay</button>
-                <button class="tab-btn" data-tab="stripe">Stripe</button>
-                <button class="tab-btn" data-tab="paypal">PayPal</button>
-                <button class="tab-btn" data-tab="payu">PayU</button>
-                <button class="tab-btn" data-tab="cashfree">Cashfree</button>
-            </div>
-            
-            <div class="tab-wrapper">
-                <div id="razorpay" class="tab-content active">
-                    <h3>Razorpay Configuration</h3>
-                    <pre><code>RAZORPAY_KEY=rzp_test_...
-RAZORPAY_SECRET=...</code></pre>
-                </div>
-                <div id="stripe" class="tab-content">
-                    <h3>Stripe Configuration</h3>
-                    <pre><code>STRIPE_KEY=pk_test_...
-STRIPE_SECRET=sk_test_...</code></pre>
-                </div>
-                <div id="paypal" class="tab-content">
-                    <h3>PayPal Configuration</h3>
-                    <pre><code>PAYPAL_MODE=sandbox
-PAYPAL_CLIENT_ID=...
-PAYPAL_CLIENT_SECRET=...</code></pre>
-                </div>
-                <div id="payu" class="tab-content">
-                    <h3>PayU Configuration</h3>
-                    <pre><code>PAYU_MERCHANT_KEY=...
-PAYU_MERCHANT_SALT=...</code></pre>
-                </div>
-                <div id="cashfree" class="tab-content">
-                    <h3>Cashfree Configuration</h3>
-                    <pre><code>CASHFREE_APP_ID=...
-CASHFREE_SECRET_KEY=...</code></pre>
-                </div>
+            <h2>Payments (configured in Settings)</h2>
+            <p>Payment providers (Razorpay / Stripe / PayPal) are configured from the admin panel:</p>
+            <ul>
+                <li><strong>Society payments:</strong> Society Admin → Settings → Payment</li>
+                <li><strong>SaaS subscriptions:</strong> Super Admin → Settings → Payments</li>
+            </ul>
+
+            <div class="alert alert-info">
+                <strong>Note:</strong> Client apps only receive <strong>public keys</strong> where needed. Secret keys remain server-side and are stored in the database.
             </div>
 
-            <h2>Notification Services</h2>
-            <p>Configure multiple notification channels for better reach:</p>
+            <h2>Razorpay webhook secret (required)</h2>
+            <div class="alert alert-warning">
+                <strong>Important:</strong> Webhook verification is enabled. Set <code>razorpay_webhook_secret</code> in the admin panel (database-driven):
+                <ul style="margin-top: 0.75rem;">
+                    <li><strong>Society payments:</strong> Society Admin → Settings → Payment</li>
+                    <li><strong>SaaS subscriptions:</strong> Super Admin → Settings → Payments</li>
+                </ul>
+            </div>
+
+            <h2>Notifications & Messaging (configured in Settings)</h2>
+            <p>Notification channels are also configured in the admin panel (database-driven):</p>
             <ul>
-                <li><strong>Firebase FCM:</strong> Push notifications for mobile app</li>
-                <li><strong>Email SMTP:</strong> Email notifications</li>
-                <li><strong>SMS Gateways:</strong> Twilio, Msg91, Textlocal</li>
-                <li><strong>WhatsApp:</strong> Twilio WhatsApp API, Meta WhatsApp Business API</li>
+                <li><strong>Push notifications:</strong> Firebase FCM</li>
+                <li><strong>Email:</strong> SMTP settings (see “Mail Configuration”)</li>
+                <li><strong>SMS / WhatsApp:</strong> provider credentials configured in Settings</li>
             </ul>
         </section>
 
@@ -428,20 +408,12 @@ CASHFREE_SECRET_KEY=...</code></pre>
 
         <section id="mail-setup">
             <h1>Mail Configuration</h1>
-            <p>Configure your SMTP settings to enable email notifications.</p>
+            <p>Mail (SMTP) settings are configured in the <strong>web dashboard settings</strong> and stored in the <strong>database</strong> (not in <code>.env</code>).</p>
 
             <img src="assets/images/mail-setup.png" alt="Mail Configuration" class="screenshot">
             
             <h3>SMTP Settings</h3>
-            <p>Update your <code>.env</code> file with your mail provider details.</p>
-            <pre><code>MAIL_MAILER=smtp
-MAIL_HOST=smtp.mailtrap.io
-MAIL_PORT=2525
-MAIL_USERNAME=your_username
-MAIL_PASSWORD=your_password
-MAIL_ENCRYPTION=tls
-MAIL_FROM_ADDRESS="hello@example.com"
-MAIL_FROM_NAME="${APP_NAME}"</code></pre>
+            <p>Enter your mail provider details in Settings (host, port, username, password, encryption, from name/address), then send a test email to confirm delivery.</p>
         </section>
 
         <!-- Web Dashboard Guide -->
@@ -630,7 +602,7 @@ MAIL_FROM_NAME="${APP_NAME}"</code></pre>
             <ul>
                 <li>View all bills with status</li>
                 <li>Bill detail with breakdown</li>
-                <li><strong>Online payment via Razorpay, Stripe, PayPal, PayU, Cashfree</strong></li>
+                <li><strong>Online payment via Razorpay, Stripe, PayPal</strong></li>
                 <li>Payment history</li>
                 <li>Download receipts</li>
             </ul>
@@ -783,7 +755,7 @@ MAIL_FROM_NAME="${APP_NAME}"</code></pre>
                     <div class="stat-label">Database Tables</div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-number">5</div>
+                    <div class="stat-number">3</div>
                     <div class="stat-label">Payment Gateways</div>
                 </div>
                 <div class="stat-card">
@@ -862,14 +834,6 @@ MAIL_FROM_NAME="${APP_NAME}"</code></pre>
                     <h3>✅ PayPal</h3>
                     <p>Global payment gateway integration</p>
                 </div>
-                <div class="gateway-card">
-                    <h3>✅ PayU</h3>
-                    <p>Popular payment gateway for regional markets</p>
-                </div>
-                <div class="gateway-card">
-                    <h3>✅ Cashfree</h3>
-                    <p>Indian payment gateway with UPI support</p>
-                </div>
             </div>
 
             <h2>Collector Management</h2>
@@ -942,6 +906,37 @@ MAIL_FROM_NAME="${APP_NAME}"</code></pre>
             </ul>
         </section>
 
+        <!-- Security -->
+        <section id="security-notes">
+            <h1>Security Notes</h1>
+            <p>Key security review fixes and platform hardening notes.</p>
+
+            <h2>Razorpay webhook authentication (fixed)</h2>
+            <ul>
+                <li><strong>Endpoint:</strong> <code>POST /api/webhooks/razorpay</code></li>
+                <li><strong>Verification:</strong> <code>X-Razorpay-Signature</code> (HMAC-SHA256 over the raw request body)</li>
+                <li><strong>Secret:</strong> database-driven <code>razorpay_webhook_secret</code></li>
+                <li><strong>Where to configure:</strong> Society Admin → Settings → Payment, and Super Admin → Settings → Payments</li>
+            </ul>
+
+            <h2>OTP in API response (fixed)</h2>
+            <ul>
+                <li><strong>Policy:</strong> OTP is never returned in API responses.</li>
+                <li><strong>Local testing:</strong> OTP may be written to logs for development.</li>
+            </ul>
+
+            <h2>Payment secrets exposure (fixed)</h2>
+            <ul>
+                <li><strong>Client responses:</strong> never include payment gateway secret keys.</li>
+                <li><strong>Public keys only:</strong> clients receive only what is needed to initialize SDKs.</li>
+            </ul>
+
+            <h2>PayPal SDK (fixed)</h2>
+            <ul>
+                <li><strong>Updated:</strong> replaced the abandoned PayPal REST SDK with <code>paypal/paypal-server-sdk</code>.</li>
+            </ul>
+        </section>
+
         <!-- Development -->
         <section id="folder-structure">
             <h1>Folder Structure</h1>
@@ -951,25 +946,6 @@ MAIL_FROM_NAME="${APP_NAME}"</code></pre>
                 <li><code>routes/api.php</code>: API Routes for the mobile app and third-party integrations.</li>
                 <li><code>routes/web.php</code>: Web routes for the admin dashboard.</li>
                 <li><code>resources/js</code>: React frontend source files (Inertia.js).</li>
-            </ul>
-        </section>
-
-        <section id="api-docs">
-            <h1>API Documentation</h1>
-            <p>The application provides a RESTful API for mobile app communication.</p>
-            
-            <h3>Base URL</h3>
-            <code>http://your-domain.com/api/v1</code>
-
-            <h3>Authentication</h3>
-            <p>The API uses Sanctum for authentication. Send the token in the Authorization header.</p>
-            <pre><code>Authorization: Bearer <your_token></code></pre>
-
-            <h3>Common Endpoints</h3>
-            <ul>
-                <li><code>POST /login</code> - Authenticate user</li>
-                <li><code>GET /user</code> - Get current user profile</li>
-                <li><code>GET /resident/bills</code> - List resident bills</li>
             </ul>
         </section>
 
@@ -996,6 +972,8 @@ MAIL_FROM_NAME="${APP_NAME}"</code></pre>
             <ul>
                 <li><strong>URL:</strong> <code>https://your-domain.com/api/webhooks/razorpay</code></li>
                 <li><strong>Events:</strong> <code>payment.captured</code>, <code>payment.failed</code></li>
+                <li><strong>Security:</strong> verifies <code>X-Razorpay-Signature</code> before processing</li>
+                <li><strong>Config:</strong> set <code>razorpay_webhook_secret</code> in admin settings (database-driven)</li>
             </ul>
 
             <h3>4. Bulk Availability (Optimization)</h3>
