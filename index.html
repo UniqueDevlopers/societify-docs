@@ -67,6 +67,11 @@
             <a class="nav-link" data-target="folder-structure">Folder Structure</a>
             <a class="nav-link" data-target="razorpay-integration">Razorpay Integration</a>
         </div>
+
+        <div class="nav-group">
+            <div class="nav-header">Help</div>
+            <a class="nav-link" data-target="troubleshooting">Troubleshooting</a>
+        </div>
     </nav>
 
     <main class="main-content">
@@ -97,7 +102,7 @@
                 <div class="platform-card">
                     <div class="platform-icon">📱</div>
                     <h3>Societify Mobile</h3>
-                    <p><strong>Flutter 3.19+ with GetX</strong></p>
+                    <p><strong>Flutter 3.x with GetX</strong></p>
                     <p>Single unified mobile app supporting all 9 user roles with role-based dashboards and features.</p>
                 </div>
             </div>
@@ -153,39 +158,84 @@
             <h1>System Requirements</h1>
             <p>Before installing Societify, ensure your environment meets the following requirements:</p>
             
+            <div class="alert alert-info">
+                <strong>You don't have to check this by hand.</strong> The installation wizard at <code>/install</code>
+                tests every item on this page automatically and tells you exactly what is missing before it lets you
+                continue.
+            </div>
+
             <h2>Backend Server</h2>
             <ul>
-                <li><strong>PHP >= 8.2</strong> (Recommended)</li>
-                <li><strong>Laravel 12</strong> Framework</li>
-                <li><strong>React 19</strong> with Inertia.js</li>
-                <li><strong>MySQL >= 5.7</strong> or <strong>MariaDB >= 10.3</strong> or <strong>PostgreSQL</strong> or <strong>SQLite</strong></li>
-                <li>BCMath PHP Extension</li>
-                <li>Ctype PHP Extension</li>
-                <li>Fileinfo PHP Extension</li>
-                <li>JSON PHP Extension</li>
-                <li>Mbstring PHP Extension</li>
-                <li>OpenSSL PHP Extension</li>
-                <li>PDO PHP Extension</li>
-                <li>Tokenizer PHP Extension</li>
-                <li>XML PHP Extension</li>
-                <li>Actively running Cron Jobs</li>
-                <li>Node.js >= 18.x (for frontend build)</li>
-                <li>Composer (PHP dependency manager)</li>
+                <li><strong>PHP 8.2 or higher</strong> — 8.3 / 8.4 supported and recommended</li>
+                <li><strong>Web server:</strong> Apache 2.4+ with <code>mod_rewrite</code>, or Nginx 1.18+</li>
+                <li><strong>Composer 2.0+</strong> (PHP dependency manager)</li>
+                <li><strong>Node.js 18 LTS or higher</strong> with npm — only needed if you want to rebuild or customise the frontend; compiled assets ship with the package</li>
+                <li><strong>Memory limit:</strong> 256 MB minimum, 512 MB recommended for large societies</li>
+                <li><strong>max_execution_time:</strong> 120 seconds or higher, so bulk bill generation does not time out</li>
+                <li><strong>Cron:</strong> one entry running Laravel's scheduler every minute (see <em>Cron Jobs</em>)</li>
+                <li><strong>SSL certificate:</strong> required in production — the mobile app talks to the backend over HTTPS only</li>
             </ul>
 
+            <h2>Database Engine</h2>
+            <p>Pick one. MySQL is the usual choice for production; SQLite is fine for evaluating the product or running a single small society.</p>
+            <ul>
+                <li><strong>MySQL 5.7+</strong> (8.0 or higher recommended)</li>
+                <li><strong>MariaDB 10.3+</strong></li>
+                <li><strong>PostgreSQL 12+</strong></li>
+                <li><strong>SQLite 3.8+</strong></li>
+            </ul>
+
+            <h2>Required PHP Extensions</h2>
+            <p>The installer will <strong>not</strong> proceed unless all of these are enabled:</p>
+            <ul>
+                <li><code>pdo</code> — plus the driver for your database: <code>pdo_mysql</code>, <code>pdo_pgsql</code> or <code>pdo_sqlite</code></li>
+                <li><code>mbstring</code></li>
+                <li><code>openssl</code></li>
+                <li><code>tokenizer</code></li>
+                <li><code>json</code></li>
+                <li><code>curl</code></li>
+                <li><code>xml</code> (with <code>libxml</code>, <code>dom</code> and <code>simplexml</code>)</li>
+                <li><code>fileinfo</code></li>
+            </ul>
+
+            <p><strong>Strongly recommended</strong> — not blocking, but some features degrade without them:</p>
+            <ul>
+                <li><code>gd</code> or <code>imagick</code> — image processing for uploads and PDF invoices</li>
+                <li><code>zip</code> — the one-click updater and report exports</li>
+                <li><code>bcmath</code> — precise financial calculations</li>
+                <li><code>intl</code> — multi-currency and multi-language formatting</li>
+            </ul>
+
+            <h2>Required PHP Functions</h2>
+            <p>Shared hosts often block these through <code>disable_functions</code>. Because <code>extension_loaded()</code> cannot detect that, the installer checks them separately — an install would otherwise pass the extension check and then fail halfway through.</p>
+            <ul>
+                <li><strong>Blocking</strong> — installation cannot complete without them:
+                    <code>putenv</code>, <code>symlink</code>, <code>file_get_contents</code>, <code>file_put_contents</code>, <code>copy</code>, <code>random_bytes</code></li>
+                <li><strong>Optional</strong> — the app runs fine without them, but database backups and the one-click updater need them:
+                    <code>exec</code>, <code>proc_open</code>, <code>set_time_limit</code></li>
+            </ul>
+
+            <h2>Writable Directories</h2>
+            <p>These must be writable by the web server user — normally <code>755</code>, or <code>775</code> where the web server runs under a different group:</p>
+            <pre><code>storage
+storage/app
+storage/framework
+storage/logs
+bootstrap/cache</code></pre>
+
             <div class="alert alert-warning">
-                <strong>Important:</strong> Ensure that your server exposes the <code>public</code> directory as the web root.
+                <strong>Important:</strong> Point your domain's document root at the <code>public</code> directory, not the project root. Serving the project root exposes <code>.env</code> and your entire source tree to the internet.
             </div>
 
             <h2>Mobile App Development</h2>
+            <p>Only needed if you intend to build and publish the Android / iOS apps yourself. The complete Flutter source code is included in your download.</p>
             <ul>
-                <li><strong>Flutter SDK >= 3.19.0</strong> (Recommended)</li>
-                <li><strong>Dart SDK >= 3.0.0</strong></li>
-                <li><strong>GetX</strong> state management</li>
-                <li>Android Studio (for Android build)</li>
-                <li>Xcode >= 14.0 (for iOS build - macOS only)</li>
-                <li>Firebase account (for push notifications)</li>
-                <li>Google Services configuration files</li>
+                <li><strong>Flutter SDK 3.x</strong> — run <code>flutter doctor</code> until it reports no blocking issues</li>
+                <li><strong>Dart SDK 3.0 or higher</strong></li>
+                <li><strong>Android:</strong> Android Studio with Android SDK 34+ and JDK 17</li>
+                <li><strong>iOS:</strong> macOS with Xcode 15+ and CocoaPods — iOS builds require a Mac, there is no way around this</li>
+                <li><strong>Firebase project</strong> (free tier is fine) for push notifications, plus your own <code>google-services.json</code> / <code>GoogleService-Info.plist</code></li>
+                <li><strong>Google Play Developer account</strong> (one-time fee) and/or <strong>Apple Developer Program</strong> membership (annual fee) to publish</li>
             </ul>
         </section>
 
@@ -202,32 +252,112 @@
             <div class="tab-wrapper">
                 <!-- Web Installer -->
                 <div id="web-install" class="tab-content active">
+                    <div class="alert alert-info">
+                        <strong>What's in the download.</strong> The package contains two folders:
+                        <code>societify-web/</code> (the Laravel backend and admin dashboard) and
+                        <code>societify-app/</code> (the Flutter mobile app source). Only
+                        <code>societify-web/</code> goes on your server.
+                    </div>
+
                     <h3>1. Web Installer (Recommended)</h3>
-                    <p>Upload the project zip file to your server (public_html) and extract it.</p>
-                    <p>Open your website URL in the browser (e.g., <code>https://yourdomain.com/install</code>). You will be greeted by the simple setup wizard.</p>
-                    
-                    <h3>2. CLI Installation (Manual)</h3>
-                    <p>Extract the project zip file to your server directory and install dependencies:</p>
+                    <p>This is the path almost everyone should take. It needs no terminal access and works on standard shared hosting.</p>
+
+                    <p><strong>Step 1 — Upload.</strong> Extract the download on your computer. Upload the
+                        <em>contents</em> of <code>societify-web/</code> to your server. On cPanel-style hosting this is
+                        usually <code>public_html</code>; on a VPS it is typically <code>/var/www/yourdomain</code>.</p>
+
+                    <p><strong>Step 2 — Point the domain at <code>public</code>.</strong> Set your domain's document
+                        root to the <code>public</code> directory inside the project. If your host will not let you
+                        change the document root, upload the project one level <em>above</em>
+                        <code>public_html</code> and make <code>public_html</code> point at the project's
+                        <code>public</code> folder.</p>
+
+                    <p><strong>Step 3 — Install PHP dependencies.</strong> The package ships without the
+                        <code>vendor</code> folder, so this step is required:</p>
                     <pre><code>cd /path-to-your-project
+composer install --optimize-autoloader --no-dev</code></pre>
+                    <p>No SSH access? Most cPanel hosts expose a "Terminal" or a "PHP Composer" tool under the Software
+                        section that runs the same command.</p>
+
+                    <p><strong>Step 4 — Set folder permissions.</strong> Make <code>storage</code> and
+                        <code>bootstrap/cache</code> writable (see System Requirements for the full list):</p>
+                    <pre><code>chmod -R 775 storage bootstrap/cache</code></pre>
+
+                    <p><strong>Step 5 — Create an empty database.</strong> Create a database and a database user with
+                        full privileges on it, and keep the host, name, username and password to hand. Skip this if you
+                        plan to evaluate with SQLite.</p>
+
+                    <p><strong>Step 6 — Run the wizard.</strong> Open
+                        <code>https://yourdomain.com/install</code> in a browser and follow the five steps:</p>
+                    <ol>
+                        <li><strong>Welcome</strong> — enter your purchase code to activate the licence.</li>
+                        <li><strong>Requirements</strong> — the wizard checks your PHP version, extensions, blocked PHP
+                            functions and folder permissions. Anything red must be fixed before you can continue.</li>
+                        <li><strong>Database</strong> — enter the credentials from step 5, or choose SQLite. The wizard
+                            writes <code>.env</code> and generates the application key for you.</li>
+                        <li><strong>Super Admin</strong> — create your own platform owner account. This replaces the
+                            demo account.</li>
+                        <li><strong>Finish</strong> — migrations and seeders run, and you are redirected to the login
+                            screen.</li>
+                    </ol>
+
+                    <div class="alert alert-success">
+                        <strong>Done.</strong> Log in at <code>https://yourdomain.com/super-admin</code> with the
+                        account you created in step 4 of the wizard.
+                    </div>
+
+                    <h3>2. CLI Installation (Manual)</h3>
+                    <p>Use this if you prefer the command line or are automating a deployment.</p>
+                    <pre><code>cd /path-to-your-project
+
+# 1. PHP dependencies
 composer install --optimize-autoloader --no-dev
+
+# 2. Environment file and application key
 cp .env.example .env
 php artisan key:generate
-                    </code></pre>
-                    
-                    <p>Create a MySQL database and update your <code>.env</code> file with database credentials. Then run migrations:</p>
-                    <pre><code>php artisan migrate --seed</code></pre>
-                    
+
+# 3. Edit .env and set your database credentials, APP_URL and APP_ENV=production
+
+# 4. Create the schema and seed demo data
+php artisan migrate --seed
+
+# 5. Make uploaded files reachable
+php artisan storage:link
+
+# 6. Cache configuration for production
+php artisan config:cache
+php artisan route:cache
+php artisan view:cache</code></pre>
+
                     <div class="alert alert-success">
-                        <strong>Success:</strong> The database has been seeded with default admin credentials.
-                        <br>Email: <code>admin@example.com</code>
-                        <br>Password: <code>password</code>
+                        <strong>Seeded demo credentials</strong> (all passwords are <code>password</code>):
+                        <br>Super Admin — <code>admin@societify.com</code> at <code>/super-admin/login</code>
+                        <br>Society Admin — <code>societyadmin@societify.com</code> at <code>/login</code>
+                        <br>Sub Admin — <code>societysubadmin@societify.com</code>
+                        <br>Accountant — <code>societyaccountant@societify.com</code>
                     </div>
+
+                    <div class="alert alert-warning">
+                        <strong>Before going live:</strong> change every seeded password, set
+                        <code>APP_DEBUG=false</code> and <code>APP_ENV=production</code> in <code>.env</code>, and add
+                        the cron entry described in the <em>Cron Jobs</em> section — automated billing, overdue checks
+                        and subscription expiry will not run without it.
+                    </div>
+
+                    <h3>3. Rebuilding the Frontend (Optional)</h3>
+                    <p>Compiled CSS and JavaScript ship in <code>public/build</code>, so the dashboard works
+                        immediately. You only need this if you modify anything under <code>resources/js</code>:</p>
+                    <pre><code>npm install
+npm run build</code></pre>
+                    <p>During development, <code>composer run dev</code> starts the PHP server, queue worker, log
+                        viewer and Vite together.</p>
                 </div>
 
                 <!-- Mobile App Installer -->
                 <div id="mobile-install" class="tab-content">
                     <div class="alert alert-info">
-                        <strong>Prerequisites:</strong> Install Flutter SDK (3.19+ recommended) and run <code>flutter doctor</code> until it shows no blocking issues.
+                        <strong>Prerequisites:</strong> Install Flutter SDK 3.x (Dart 3.0+) and run <code>flutter doctor</code> until it shows no blocking issues.
                     </div>
 
                     <h3>1. Flutter Setup</h3>
@@ -238,22 +368,59 @@ php artisan key:generate
                         <li><strong>Linux:</strong> Download + install from <code>https://docs.flutter.dev/get-started/install/linux</code></li>
                     </ul>
                     <p>Navigate to the mobile app directory and install packages:</p>
-                    <pre><code>cd mobile-app
+                    <pre><code>cd societify-app
 flutter pub get</code></pre>
 
                     <div class="alert alert-warning">
-                        <strong>Important:</strong> Make sure you're using Flutter 3.19.0 or higher. Update Flutter if needed: <code>flutter upgrade</code>
+                        <strong>Important:</strong> Use Flutter 3.x with Dart 3.0 or higher. Update Flutter if needed: <code>flutter upgrade</code>
                     </div>
 
-                    <h3>2. API URL Configuration</h3>
-                    <p>Configure the API base URL in <code>lib/constants/api_constants.dart</code> (single base URL):</p>
-                    <pre><code>class ApiConstants {
-  /// Production API URL - Change this to your backend URL
-  static const String baseUrl = 'https://yourdomain.com/api';
-}</code></pre>
+                    <h3>2. Pointing the App at Your Server</h3>
+                    <p>The backend address lives in <code>lib/constants/env_config.dart</code>, which maps three build
+                        flavors to three URLs:</p>
+                    <pre><code>dev      → http://10.0.2.2:8000                       (Android emulator loopback)
+staging  → https://staging-societify.uniquedeveloper.in
+prod     → https://societify.uniquedeveloper.in</code></pre>
+
+                    <p>You have two ways to point the app at your own backend.</p>
+
+                    <p><strong>Option A — supply it at build time (recommended).</strong> Nothing in the source changes,
+                        so future updates never conflict with your edits:</p>
+                    <pre><code>flutter build apk --release \
+  --dart-define=FLAVOR=prod \
+  --dart-define=BASE_URL=https://yourdomain.com</code></pre>
+
+                    <p><strong>Option B — edit the defaults.</strong> Open
+                        <code>lib/constants/env_config.dart</code> and replace the URL returned for
+                        <code>Flavor.prod</code> with your own.</p>
+
+                    <div class="alert alert-info">
+                        <strong>Use the bare domain, not the <code>/api</code> path.</strong> Pass
+                        <code>https://yourdomain.com</code> — the app appends <code>/api</code> to each endpoint itself.
+                        Include <code>https://</code>, and no trailing slash.
+                    </div>
 
                     <div class="alert alert-warning">
-                        <strong>Before Release:</strong> Ensure <code>baseUrl</code> points to your production backend.
+                        <strong>About SSL certificate pinning.</strong> The app ships with a certificate pin for the
+                        demo server only. The moment you point <code>baseUrl</code> at your own domain, pinning turns
+                        itself off automatically — a stale pin would otherwise break every connection with an
+                        unhelpful TLS error. To pin your own certificate, read its fingerprint and pass it at build
+                        time:
+                        <pre style="margin-top:0.75rem;"><code>openssl s_client -connect yourdomain.com:443 &lt;/dev/null \
+  | openssl x509 -noout -fingerprint -sha256
+
+flutter build apk --release \
+  --dart-define=FLAVOR=prod \
+  --dart-define=BASE_URL=https://yourdomain.com \
+  --dart-define=PINNED_SHA256=AA:BB:CC:...</code></pre>
+                        Re-issue the build whenever that certificate is renewed, or the app will stop connecting.
+                    </div>
+
+                    <div class="alert alert-info">
+                        <strong>Testing locally.</strong> Run the backend with <code>php artisan serve</code> and start
+                        the app with <code>flutter run --dart-define=FLAVOR=dev</code>. On an Android emulator,
+                        <code>10.0.2.2</code> is the host machine's <code>localhost</code>. On a physical device, pass
+                        your computer's LAN IP with <code>--dart-define=BASE_URL=http://192.168.x.x:8000</code> instead.
                     </div>
 
                     <h3>3. App Logo & Icons Configuration</h3>
@@ -309,14 +476,33 @@ flutter pub get</code></pre>
                     </ul>
 
                     <h3>5. Firebase Setup</h3>
-                    <p>Place your Firebase configuration files in the respective directories:</p>
-                    <ul>
-                        <li><strong>Android:</strong> <code>android/app/google-services.json</code></li>
-                        <li><strong>iOS:</strong> <code>ios/Runner/GoogleService-Info.plist</code></li>
-                    </ul>
+                    <p>Push notifications — including the visitor-approval popup — need your own Firebase project. The
+                        package ships <code>.example</code> template files; you replace them with the real ones.</p>
+
+                    <ol>
+                        <li>Create a free project at <code>console.firebase.google.com</code>.</li>
+                        <li>Add an <strong>Android app</strong> using the exact package name you set in step 4, then
+                            download <code>google-services.json</code> and place it at
+                            <code>android/app/google-services.json</code>.</li>
+                        <li>Add an <strong>iOS app</strong> using your bundle identifier, download
+                            <code>GoogleService-Info.plist</code> and place it at
+                            <code>ios/Runner/GoogleService-Info.plist</code>.</li>
+                        <li>In the Firebase console open <strong>Project settings → Service accounts</strong> and
+                            generate a new private key. This downloads a JSON file.</li>
+                        <li>Upload that JSON in your web dashboard under <strong>Super Admin → Settings →
+                                Notifications</strong>. This is what lets the backend send push messages.</li>
+                    </ol>
 
                     <div class="alert alert-warning">
-                        <strong>Important:</strong> Make sure the Firebase project package name/bundle ID matches your app's package name/bundle identifier.
+                        <strong>Important:</strong> The package name in Firebase must match your app's package name
+                        exactly, and the bundle ID must match your iOS bundle identifier. A mismatch produces an app
+                        that builds and runs but silently never receives a notification.
+                    </div>
+
+                    <div class="alert alert-warning">
+                        <strong>Never commit or redistribute the service-account JSON.</strong> It grants full
+                        administrative access to your Firebase project. Keep it out of your repository and out of any
+                        package you share.
                     </div>
 
                     <h3>6. Build Configuration</h3>
@@ -349,15 +535,47 @@ flutter pub get</code></pre>
                     </ul>
 
                     <h3>7. Build Commands</h3>
-                    <p>After configuration, build your app:</p>
-                    <pre><code># Android APK
-flutter build apk --release
+                    <p>Always pass <code>FLAVOR=prod</code> and your own <code>BASE_URL</code> for a release build —
+                        without them the app points at the demo server.</p>
+                    <pre><code># Android APK — for direct distribution or testing
+flutter build apk --release \
+  --dart-define=FLAVOR=prod \
+  --dart-define=BASE_URL=https://yourdomain.com
 
-# Android App Bundle (for Play Store)
-flutter build appbundle --release
+# Android App Bundle — required for the Play Store
+flutter build appbundle --release \
+  --dart-define=FLAVOR=prod \
+  --dart-define=BASE_URL=https://yourdomain.com
 
-# iOS (requires macOS and Xcode)
-flutter build ios --release</code></pre>
+# iOS — requires macOS and Xcode
+flutter build ios --release \
+  --dart-define=FLAVOR=prod \
+  --dart-define=BASE_URL=https://yourdomain.com</code></pre>
+
+                    <p>Build output locations:</p>
+                    <ul>
+                        <li>APK — <code>build/app/outputs/flutter-apk/app-release.apk</code></li>
+                        <li>App Bundle — <code>build/app/outputs/bundle/release/app-release.aab</code></li>
+                        <li>iOS — open <code>ios/Runner.xcworkspace</code> in Xcode and use
+                            <em>Product → Archive</em> to upload</li>
+                    </ul>
+
+                    <h3>8. Pre-Release Checklist</h3>
+                    <ul>
+                        <li><code>BASE_URL</code> points at your production backend, over HTTPS</li>
+                        <li>Your own <code>google-services.json</code> and <code>GoogleService-Info.plist</code> are in place</li>
+                        <li>Package name / bundle identifier changed from the default</li>
+                        <li>App icons, splash screen and display name replaced with your branding</li>
+                        <li>Release signing configured — an unsigned or debug-signed build is rejected by both stores</li>
+                        <li>Test on a real device: login, push notification, visitor approval popup, and one payment</li>
+                    </ul>
+
+                    <div class="alert alert-warning">
+                        <strong>Keep your keystore safe.</strong> Back up
+                        <code>android/app/key.jks</code> and <code>key.properties</code> somewhere secure. If you lose
+                        the keystore you can never publish an update to the same Play Store listing — you would have to
+                        publish a brand new app and every existing user would need to reinstall.
+                    </div>
                 </div>
             </div>
         </section>
@@ -401,9 +619,51 @@ flutter build ios --release</code></pre>
 
         <section id="cron-jobs">
             <h1>Cron Jobs</h1>
-            <p>Societify requires a single Cron entry to run scheduled tasks (like subscription checks, cleanup).</p>
+            <p>Societify needs <strong>one</strong> cron entry. Laravel's scheduler handles the rest internally, so you
+                never add a second line no matter how many tasks exist.</p>
 
             <pre><code>* * * * * cd /path-to-your-project && php artisan schedule:run >> /dev/null 2>&1</code></pre>
+
+            <div class="alert alert-warning">
+                <strong>This is not optional.</strong> Without it, monthly bill cycles are never generated, bills are
+                never marked overdue, late fees never accrue, renewal reminders are never sent, and expired
+                subscriptions keep working indefinitely. This is the single most common reason a new installation
+                "stops working" after a few weeks.
+            </div>
+
+            <h3>Adding it on cPanel</h3>
+            <ol>
+                <li>Open <strong>Advanced → Cron Jobs</strong>.</li>
+                <li>Under Common Settings choose <strong>Once Per Minute (* * * * *)</strong>.</li>
+                <li>Paste the command above, replacing <code>/path-to-your-project</code> with your real path (usually
+                    <code>/home/username/public_html</code>).</li>
+                <li>If your host runs several PHP versions, use the absolute PHP binary path instead of bare
+                    <code>php</code> — for example
+                    <code>/usr/local/bin/ea-php83 artisan schedule:run</code>.</li>
+            </ol>
+
+            <h3>What the scheduler runs</h3>
+            <table>
+                <thead>
+                    <tr><th>Task</th><th>When</th><th>What it does</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>Generate billing cycle</td><td>1st of each month, 02:00</td><td>Creates the next billing cycle for every active society</td></tr>
+                    <tr><td>Check overdue bills</td><td>Daily</td><td>Flags unpaid bills as overdue so late fees begin accruing</td></tr>
+                    <tr><td>Check subscription expiry</td><td>Daily, 09:00</td><td>Flags SaaS subscriptions expiring in 7, 3 and 1 days</td></tr>
+                    <tr><td>Send renewal reminders</td><td>Daily, 10:00</td><td>Emails and pushes renewal notices to society admins</td></tr>
+                    <tr><td>Revoke expired access</td><td>Daily</td><td>Revokes API tokens once the 5-day grace period has lapsed</td></tr>
+                    <tr><td>Clear password resets</td><td>Daily</td><td>Deletes expired password-reset tokens</td></tr>
+                </tbody>
+            </table>
+
+            <h3>Verifying it works</h3>
+            <p>Run the scheduler by hand once and confirm it reports the tasks it would run:</p>
+            <pre><code>php artisan schedule:list
+php artisan schedule:run</code></pre>
+            <p>If <code>schedule:run</code> prints "No scheduled commands are ready to run", that is normal — it simply
+                means nothing is due at this exact minute. Errors, on the other hand, will appear in
+                <code>storage/logs/laravel.log</code>.</p>
         </section>
 
         <section id="mail-setup">
@@ -988,6 +1248,141 @@ flutter build ios --release</code></pre>
         "2025-12-09": "available"
     }
 }</code></pre>
+        </section>
+
+        <!-- Troubleshooting -->
+        <section id="troubleshooting">
+            <h1>Troubleshooting</h1>
+            <p>The problems buyers actually hit, and what fixes them. Work down the list — the first few cover the
+                large majority of support requests.</p>
+
+            <h2>Installation</h2>
+
+            <h3>"Vite manifest not found"</h3>
+            <p>The compiled frontend is missing from <code>public/build</code>. Either restore that folder from the
+                original download, or rebuild it:</p>
+            <pre><code>npm install && npm run build</code></pre>
+
+            <h3>Blank white page after upload</h3>
+            <ul>
+                <li>Your document root is pointing at the project folder instead of <code>public</code>.</li>
+                <li><code>composer install</code> was never run, so <code>vendor</code> is missing.</li>
+                <li>Check <code>storage/logs/laravel.log</code> — the real error is almost always recorded there.</li>
+                <li>Temporarily set <code>APP_DEBUG=true</code> to see the error on screen, then set it back to
+                    <code>false</code>.</li>
+            </ul>
+
+            <h3>500 error immediately after install</h3>
+            <p>Usually permissions or a stale cache. Run:</p>
+            <pre><code>chmod -R 775 storage bootstrap/cache
+php artisan config:clear
+php artisan cache:clear
+php artisan view:clear</code></pre>
+
+            <h3>The installer says an extension or function is missing</h3>
+            <p>Enable it in your hosting control panel (cPanel: <em>Select PHP Version → Extensions</em>) and reload
+                the page. If a <em>function</em> is reported missing rather than an extension, it has been blocked
+                through <code>disable_functions</code> in <code>php.ini</code> — your host has to remove it from that
+                list.</p>
+
+            <h3>The installer keeps reappearing after a successful install</h3>
+            <p>The install marker under <code>storage/app/private</code> could not be written. Confirm
+                <code>storage</code> is writable and run the wizard again.</p>
+
+            <h3>404 on every page except the homepage</h3>
+            <p>URL rewriting is off. On Apache, enable <code>mod_rewrite</code> and allow <code>.htaccess</code>
+                overrides (<code>AllowOverride All</code>). On Nginx, add Laravel's
+                <code>try_files $uri $uri/ /index.php?$query_string;</code> to your server block.</p>
+
+            <h2>Scheduled Tasks &amp; Billing</h2>
+
+            <h3>Bills are not generating automatically</h3>
+            <p>Nine times out of ten the cron entry is missing or wrong. Check the <em>Cron Jobs</em> section, confirm
+                the path is correct, and if your host runs multiple PHP versions use the absolute path to the PHP 8.2+
+                binary rather than bare <code>php</code>.</p>
+
+            <h3>Late fees are not being applied</h3>
+            <p>Late fees accrue only after a bill is marked overdue, which is a daily scheduled task. No cron means no
+                overdue flag and therefore no late fee. Also confirm a penalty model and grace period are configured
+                under Society Admin → Billing Configuration.</p>
+
+            <h3>A custom billing formula is rejected when saving</h3>
+            <p>Formulas accept numbers, <code>+ - * /</code>, parentheses and the named variables shown beside the
+                field — nothing else. Function calls and unknown variable names are refused deliberately. The inline
+                error names the offending token.</p>
+
+            <h2>Mobile App</h2>
+
+            <h3>The app cannot reach the server / login times out</h3>
+            <ul>
+                <li>Confirm you built with <code>--dart-define=BASE_URL=https://yourdomain.com</code> — without it the
+                    app points at the demo server.</li>
+                <li>Use the bare domain, with <code>https://</code> and no trailing <code>/api</code>.</li>
+                <li>Open <code>https://yourdomain.com/api/locales</code> in a browser. If that returns JSON, the
+                    backend is fine and the problem is in the app's configuration.</li>
+                <li>A self-signed or expired SSL certificate will be rejected. Use a valid certificate.</li>
+            </ul>
+
+            <h3>"SSL Certificate Pinning failed"</h3>
+            <p>A pin is set that does not match the certificate actually being served — normally because the
+                certificate was renewed. Either rebuild with the new fingerprint via
+                <code>--dart-define=PINNED_SHA256=...</code>, or omit that flag to disable pinning.</p>
+
+            <h3>Push notifications never arrive</h3>
+            <ul>
+                <li>The Firebase package name must match your app's package name exactly — a mismatch fails silently.</li>
+                <li>The service-account JSON must be uploaded under Super Admin → Settings → Notifications.</li>
+                <li>iOS additionally needs an APNs key uploaded to Firebase and the Push Notifications capability
+                    enabled in Xcode.</li>
+                <li>Notifications do not work on the iOS Simulator — test on a real device.</li>
+            </ul>
+
+            <h3>The visitor approval popup does not appear</h3>
+            <ul>
+                <li>It is Android-only. iOS shows a standard notification with Approve / Reject actions instead.</li>
+                <li>The resident must have granted the "Display over other apps" permission — it is offered once at
+                    first login and can be re-enabled from Settings → Instant Delivery Popups.</li>
+                <li>Aggressive battery savers on some Android brands kill background delivery. Exclude the app from
+                    battery optimisation.</li>
+            </ul>
+
+            <h3>The build fails after changing the package name</h3>
+            <p>The package name must be updated consistently in <code>android/app/build.gradle.kts</code>, the
+                <code>AndroidManifest.xml</code> files and the Kotlin source folder path, and it must match the Firebase
+                configuration. Then run <code>flutter clean &amp;&amp; flutter pub get</code> before rebuilding.</p>
+
+            <h2>Payments</h2>
+
+            <h3>Payments succeed at the gateway but the bill stays unpaid</h3>
+            <p>The webhook is not reaching your server or its secret is wrong. Confirm the webhook URL is registered in
+                the gateway dashboard, that the secret matches the one stored in Settings, and that your server is
+                publicly reachable over HTTPS.</p>
+
+            <h3>The payment option does not appear in the app</h3>
+            <p>Gateway credentials are stored per society, not in <code>.env</code>. Configure them under Society Admin
+                → Settings → Payment, and make sure the gateway is enabled. The app fetches the enabled list at
+                runtime.</p>
+
+            <h3>"Too many requests" during testing</h3>
+            <p>Payment and authentication endpoints are rate limited on purpose — 10 payment requests per minute, and
+                stricter limits on login and OTP. Wait a minute and continue.</p>
+
+            <h2>Email &amp; SMS</h2>
+
+            <h3>Emails are not being delivered</h3>
+            <p>SMTP settings live in the dashboard, not <code>.env</code>. Configure them under Super Admin → Settings
+                → Mail and use the built-in test button. If the test passes but real mail does not arrive, check spam
+                and confirm your sending domain has SPF and DKIM records.</p>
+
+            <h3>OTP messages are not arriving</h3>
+            <p>Confirm the SMS provider credentials under Super Admin → Settings, that your provider account has
+                balance, and that the phone number includes the correct country code. The settings screen has a test
+                button for SMS and WhatsApp.</p>
+
+            <h2>Still stuck?</h2>
+            <p>Before requesting support, collect: your PHP version, database engine, the exact error message, and the
+                last 50 lines of <code>storage/logs/laravel.log</code>. That usually turns a multi-day exchange into a
+                single reply.</p>
         </section>
 
     </main>
