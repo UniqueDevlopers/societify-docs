@@ -245,6 +245,80 @@ bootstrap/cache</code></pre>
             <h1>Installation</h1>
             <p>Follow these steps to set up the Backend and the Mobile Application.</p>
 
+            <h2>What's in the download — and what you generate</h2>
+
+            <p>The package contains the complete source for both projects. Dependency folders are
+                deliberately <strong>not</strong> included: they are large, platform-specific, and regenerated
+                from the lock files that ship with the code, so you always get versions matched to your own PHP
+                and Node.</p>
+
+            <table>
+                <thead>
+                    <tr><th>Folder</th><th>Included?</th><th>How to generate it</th></tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>societify-web/vendor/</code></td>
+                        <td><strong>No</strong></td>
+                        <td><code>composer install --optimize-autoloader --no-dev</code> — <strong>required</strong>, the app will not boot without it</td>
+                    </tr>
+                    <tr>
+                        <td><code>societify-web/node_modules/</code></td>
+                        <td><strong>No</strong></td>
+                        <td><code>npm install</code> — only if you want to modify the frontend</td>
+                    </tr>
+                    <tr>
+                        <td><code>societify-web/public/build/</code></td>
+                        <td>Yes</td>
+                        <td>Already compiled. Re-run <code>npm run build</code> only after editing <code>resources/js</code></td>
+                    </tr>
+                    <tr>
+                        <td><code>societify-web/.env</code></td>
+                        <td>No</td>
+                        <td>Created for you by the install wizard, or <code>cp .env.example .env</code></td>
+                    </tr>
+                    <tr>
+                        <td><code>societify-app/build/</code>, <code>.dart_tool/</code></td>
+                        <td><strong>No</strong></td>
+                        <td><code>flutter pub get</code>, then <code>flutter build</code></td>
+                    </tr>
+                    <tr>
+                        <td><code>societify-app/ios/Pods/</code></td>
+                        <td>No</td>
+                        <td><code>cd ios &amp;&amp; pod install</code> (macOS only)</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="alert alert-success">
+                <strong>The frontend is pre-compiled.</strong> <code>public/build</code> ships ready to serve, so a
+                standard install needs <strong>only Composer</strong> — no Node, no build step. That matters on
+                shared hosting where Node is unavailable.
+            </div>
+
+            <p>The complete, unminified source is included either way: PHP in <code>app/</code>, React and
+                TypeScript in <code>resources/js/</code>, and Dart in <code>societify-app/lib/</code>. Nothing is
+                obfuscated or withheld.</p>
+
+            <h3>The short version</h3>
+            <p>On a fresh server, this is the whole job:</p>
+            <pre><code># 1. Extract the package and upload societify-web/ to your server
+# 2. Point your domain at the public/ directory
+# 3. Install PHP dependencies
+composer install --optimize-autoloader --no-dev
+
+# 4. Make the writable directories writable
+chmod -R 775 storage bootstrap/cache
+
+# 5. Open https://yourdomain.com/install and follow the wizard</code></pre>
+
+            <div class="alert alert-info">
+                <strong>Applying an update later?</strong> Update packages are different — they ship
+                <code>vendor/</code> already installed and the frontend already compiled, so applying one needs no
+                Composer and no Node at all. Upload it under <strong>Super Admin → Update</strong> and the
+                installed version is upgraded in place, with a backup taken first.
+            </div>
+
             <div class="tabs">
                 <button class="tab-btn active" data-tab="web-install">Web / Backend</button>
                 <button class="tab-btn" data-tab="mobile-install">Mobile App</button>
