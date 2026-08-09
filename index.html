@@ -53,6 +53,7 @@
             <a class="nav-link" data-target="features-overview">Features Overview</a>
             <a class="nav-link" data-target="saas-features">SaaS & Multi-Tenancy</a>
             <a class="nav-link" data-target="billing-features">Billing & Payments</a>
+            <a class="nav-link" data-target="printable-documents">Printable Documents</a>
             <a class="nav-link" data-target="visitor-features">Visitor Management</a>
             <a class="nav-link" data-target="community-features">Community Features</a>
         </div>
@@ -1105,6 +1106,123 @@ php artisan schedule:run</code></pre>
                 <li><strong>Daily Collection Reports:</strong> Detailed daily reports</li>
                 <li><strong>Building-wise Assignment:</strong> Assign collectors to specific buildings</li>
             </ul>
+
+            <h2>Late Fees &amp; Penalties</h2>
+            <p>Configured per society under <strong>Society Admin → Settings → Billing</strong>. Late fees are applied
+                by the daily <code>app:check-overdue-bills</code> scheduled task, so they only accrue if your cron entry
+                is running.</p>
+
+            <h3>Calculation types</h3>
+            <table>
+                <thead>
+                    <tr><th>Type</th><th>How it is calculated</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>Fixed amount per day</td><td>A flat sum for each day overdue</td></tr>
+                    <tr><td>Percentage per day</td><td>A percentage of the pending amount, for each day overdue</td></tr>
+                    <tr><td>Daily interest</td><td>An interest rate applied per day</td></tr>
+                    <tr><td>Monthly interest</td><td>An interest rate applied per month overdue, rounded up</td></tr>
+                    <tr><td>Flat penalty</td><td>A single charge, applied once</td></tr>
+                </tbody>
+            </table>
+
+            <h3>Frequency</h3>
+            <ul>
+                <li><strong>Daily</strong> — accrues incrementally, once per day</li>
+                <li><strong>Monthly</strong> — applied once per month overdue</li>
+                <li><strong>One-time</strong> — applied once, the first time the bill goes overdue</li>
+            </ul>
+
+            <h3>Grace period</h3>
+            <p>A configurable number of days (0–365) after the due date during which no late fee accrues. Set it to
+                <code>0</code> to start charging the day after the due date.</p>
+
+            <h3>Worked examples</h3>
+            <p><strong>Daily interest, 2% per day, 5 grace days.</strong> A ₹10,000 bill due 1 January, viewed on
+                10 January. Nine days have passed, five are absorbed by the grace period, so four are chargeable:
+                <code>10,000 × 2% × 4 = ₹800</code>.</p>
+
+            <p><strong>Monthly interest, 5% per month, no grace.</strong> A ₹10,000 bill due 1 January, viewed on
+                15 March. Two months overdue (rounded up): <code>10,000 × 5% × 2 = ₹1,000</code>.</p>
+
+            <p><strong>Flat penalty, ₹500, one-time, 7 grace days.</strong> A ₹10,000 bill due 1 January, viewed on
+                10 January. Past the grace window, so the penalty applies — <code>₹500</code>, once, and it does not
+                grow.</p>
+
+            <div class="alert alert-info">
+                <strong>Late fees are part of the amount due.</strong> Every outstanding total, payment check and
+                report uses the bill total <em>including</em> late fees, so a bill is only marked paid once the fee is
+                covered too.
+            </div>
+
+            <div class="alert alert-warning">
+                <strong>Not accruing?</strong> Late fees depend on a bill being flagged overdue, which is a daily
+                scheduled task. No cron means no overdue flag and therefore no late fee. See <em>Cron Jobs</em>.
+            </div>
+        </section>
+
+        <!-- Printable Documents -->
+        <section id="printable-documents">
+            <h1>Printable Documents &amp; PDF Export</h1>
+            <p>Bills, resident statements, bank statements and finance reports are rendered server-side as standalone
+                documents. Each opens in its own browser tab containing only the document plus a small toolbar
+                (Print / Download PDF / Export CSV / Close) that disappears as soon as the browser enters print
+                layout — so navigation and dashboard cards never end up on the printed sheet.</p>
+
+            <h2>Available documents</h2>
+            <table>
+                <thead>
+                    <tr><th>Document</th><th>Where</th><th>Formats</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>Resident statement / ledger</td><td>Society Admin → Ledgers</td><td>Print, PDF, CSV</td></tr>
+                    <tr><td>Bank statement</td><td>Society Admin → Bank Accounts</td><td>Print, PDF, CSV</td></tr>
+                    <tr><td>Finance reports</td><td>Society Admin → Reports</td><td>Print, PDF, Excel (CSV)</td></tr>
+                    <tr><td>Maintenance bill / invoice</td><td>Society Admin → Bills</td><td>Print, PDF</td></tr>
+                </tbody>
+            </table>
+
+            <p>Statements accept a date range and always report an <strong>opening balance</strong>, the movements in
+                the period, and a <strong>closing balance</strong>, so a filtered statement still reconciles against
+                the account as a whole. CSV exports carry the same opening and closing rows and are written with a
+                UTF-8 byte-order mark, so Excel renders currency symbols and non-Latin text correctly.</p>
+
+            <h2 id="pdf-fonts">Hindi, Arabic and other non-Latin PDFs</h2>
+
+            <div class="alert alert-warning">
+                <strong>Read this if you use Hindi, Arabic, or any non-Latin language.</strong> The PDF renderer ships
+                with only the DejaVu font, which has no Devanagari, Arabic, Thai or CJK glyphs. Those languages print
+                perfectly from the <em>browser</em>, because the browser uses your system fonts — but a
+                <strong>PDF export will come out as empty boxes</strong> until you install a Unicode font.
+            </div>
+
+            <h3>Installing a font</h3>
+            <p>Drop a TrueType font into <code>storage/fonts</code> on your server:</p>
+            <pre><code>storage/fonts/document.ttf        # required
+storage/fonts/document-bold.ttf   # optional — synthesised if absent</code></pre>
+
+            <p>That is the whole procedure. The matching <code>@font-face</code> is emitted automatically — there is no
+                config file to edit and no cache to clear. Noto Sans is the usual choice, or a per-script build such as
+                Noto Sans Devanagari or Noto Sans Arabic.</p>
+
+            <div class="alert alert-info">
+                <strong>Keep the font small.</strong> The renderer parses the entire font on first use. A per-script
+                Noto of roughly 200 KB is fine; a 20 MB pan-Unicode font can exceed PHP's default
+                <code>memory_limit</code> on that first render and fail. The parsed metrics are cached next to the
+                font, so only the first render pays the cost.
+            </div>
+
+            <h3>Customising the look</h3>
+            <p>All documents share one template and one stylesheet, so a change applies to both the printed page and
+                the PDF and the two can never drift apart:</p>
+            <ul>
+                <li><code>resources/views/documents/layout.blade.php</code> — letterhead, meta strip, sign-off, footer, toolbar</li>
+                <li><code>resources/views/documents/styles.blade.php</code> — the single stylesheet every document uses</li>
+            </ul>
+            <p>Put your letterhead, colours and sign-off wording here. Note that the PDF renderer supports neither
+                flexbox nor CSS grid, which is why the shell is built from tables — keep any additions table-based, and
+                confine browser-only styling to <code>@media print</code> or the <code>.screen-only</code> class, which
+                the PDF renderer ignores.</p>
         </section>
 
         <!-- Visitor Features -->
