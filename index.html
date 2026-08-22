@@ -674,6 +674,10 @@ flutter build ios --release \
                 <strong>Note:</strong> Client apps only receive <strong>public keys</strong> where needed. Secret keys remain server-side and are stored in the database.
             </div>
 
+            <div class="alert alert-warning">
+                <strong>Important Note on Gateway Fees &amp; Service Costs:</strong> Buyers and platform operators are responsible for any transaction fees, service costs, processing commissions, or subscription fees associated with their chosen payment gateway providers (e.g. Razorpay, Stripe, PayPal, PayU, Cashfree). All third-party gateway charges are set and billed directly by the respective providers and are not included in the item purchase price.
+            </div>
+
             <h2>Razorpay webhook secret (required)</h2>
             <div class="alert alert-warning">
                 <strong>Important:</strong> Webhook verification is enabled. Set <code>razorpay_webhook_secret</code> in the admin panel (database-driven):
@@ -1169,6 +1173,10 @@ php artisan schedule:run</code></pre>
                     <h3>✅ PayPal</h3>
                     <p>Global payment gateway integration</p>
                 </div>
+            </div>
+
+            <div class="alert alert-warning" style="margin-top: 1.5rem;">
+                <strong>Transaction Fees &amp; Service Costs Clarification:</strong> Please note that buyers are solely responsible for any transaction fees, per-payment commissions, currency conversion charges, or account maintenance costs associated with their chosen payment gateway providers. These fees are determined by the providers and charged directly to your gateway account.
             </div>
 
             <h2>Collector Management</h2>
