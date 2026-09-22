@@ -533,7 +533,11 @@ flutter build apk --release \
     }
 }</code></pre>
 
-                    <p>Also update package name in <code>AndroidManifest.xml</code> files and Java/Kotlin source files.</p>
+                    <p><strong>Change only <code>applicationId</code>.</strong> Leave the <code>namespace</code> line, the
+                        <code>AndroidManifest.xml</code> files and the Kotlin folder
+                        (<code>kotlin/com/uniquedevelopers/societify/MainActivity.kt</code>) exactly as they are — the
+                        store id and the code package are independent. Renaming the namespace without moving
+                        <code>MainActivity.kt</code> makes the app close on first open ("keeps stopping").</p>
 
                     <h4>iOS Bundle Identifier</h4>
                     <p>Update bundle identifier in <code>ios/Runner.xcodeproj/project.pbxproj</code> or via Xcode:</p>
@@ -1546,10 +1550,14 @@ php artisan view:clear</code></pre>
                     battery optimisation.</li>
             </ul>
 
-            <h3>The build fails after changing the package name</h3>
-            <p>The package name must be updated consistently in <code>android/app/build.gradle.kts</code>, the
-                <code>AndroidManifest.xml</code> files and the Kotlin source folder path, and it must match the Firebase
-                configuration. Then run <code>flutter clean &amp;&amp; flutter pub get</code> before rebuilding.</p>
+            <h3>The app closes on first open ("keeps stopping") after changing the package name</h3>
+            <p>Only <code>applicationId</code> in <code>android/app/build.gradle.kts</code> should change. If the
+                <code>namespace</code> or the manifest was changed too, Android looks for <code>MainActivity</code> in a
+                package where it does not exist. Put <code>namespace</code> back to
+                <code>com.uniquedevelopers.societify</code> (or move <code>MainActivity.kt</code> into a folder and
+                <code>package</code> line matching the new namespace), then run
+                <code>flutter clean &amp;&amp; flutter pub get</code> before rebuilding. The
+                <code>applicationId</code> must also match the package name registered in Firebase.</p>
 
             <h2>Payments</h2>
 
