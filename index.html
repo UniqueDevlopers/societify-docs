@@ -29,6 +29,7 @@
         <div class="nav-group">
             <div class="nav-header">Configuration</div>
             <a class="nav-link" data-target="env-setup">System Settings</a>
+            <a class="nav-link" data-target="realtime-setup">Real-Time &amp; WebSockets</a>
             <a class="nav-link" data-target="cron-jobs">Cron Jobs</a>
             <a class="nav-link" data-target="mail-setup">Mail Configuration</a>
         </div>
@@ -698,6 +699,176 @@ flutter build ios --release \
                 <li><strong>Email:</strong> SMTP settings (see “Mail Configuration”)</li>
                 <li><strong>SMS / WhatsApp:</strong> provider credentials configured in Settings</li>
             </ul>
+        </section>
+
+        <section id="realtime-setup">
+            <h1>Real-Time Messaging &amp; WebSockets (Reverb &amp; LiveKit)</h1>
+            <p>Societify features high-performance real-time communication for instant resident-to-guard chat, live gatepass notifications, and WebRTC video intercom and AGM meetings. Administrators can choose between self-hosted <strong>Laravel Reverb</strong> (unlimited, zero subscription fees) or cloud-hosted <strong>Pusher Channels</strong>.</p>
+
+            <div class="alert alert-info">
+                <strong>Why Laravel Reverb?</strong> Reverb is a first-party, high-speed WebSocket server built for Laravel. It provides 100% data privacy within your own infrastructure, zero message transit limits, and zero recurring cloud costs compared to Pusher.
+            </div>
+
+            <h2>1. Super Admin Configuration</h2>
+            <p>Real-time messaging is managed centrally from the Super Admin portal:</p>
+            <ol>
+                <li>Log in to <strong>Super Admin → Settings → Channels &amp; Gateways</strong>.</li>
+                <li>Find the <strong>Real-Time Messaging (Pusher &amp; Laravel Reverb)</strong> card and toggle it to <strong>Active</strong>.</li>
+                <li>Select your provider:
+                    <ul>
+                        <li><strong>Laravel Reverb (Self-Hosted):</strong> Click <strong>Generate Keys</strong> to generate random App ID, Key, and Secret. Set Host to your domain, Port to <code>443</code> (or <code>8080</code>), and Protocol Scheme to <code>https</code> (WSS).</li>
+                        <li><strong>Pusher Channels:</strong> Enter your Pusher App ID, Key, Secret, Cluster (e.g. <code>ap2</code>), and TLS setting.</li>
+                    </ul>
+                </li>
+                <li>Click <strong>Save Changes</strong>.</li>
+                <li>Use the <strong>Test Reverb Connection</strong> button to verify connection health.</li>
+            </ol>
+
+            <h2>2. 24/7 Daemon Management with Supervisor</h2>
+            <p>In production, background services must run continuously 24/7 without manual intervention. <strong>Supervisor</strong> monitors your processes and automatically restarts them if they crash or the server reboots.</p>
+
+            <h3>Step 2.1: Install Supervisor</h3>
+            <p>On Ubuntu / Debian:</p>
+            <pre><code>sudo apt-get update &amp;&amp; sudo apt-get install supervisor -y</code></pre>
+            <p>On AlmaLinux / Rocky Linux / CentOS:</p>
+            <pre><code>sudo dnf install epel-release -y &amp;&amp; sudo dnf install supervisor -y
+sudo systemctl enable --now supervisord</code></pre>
+
+            <h3>Step 2.2: Laravel Reverb Daemon</h3>
+            <p>Create <code>/etc/supervisor/conf.d/societify-reverb.conf</code>:</p>
+            <pre><code>[program:societify-reverb]
+process_name=%(program_name)s_%(process_num)02d
+command=php /var/www/societify/website/artisan reverb:start --host=0.0.0.0 --port=8080 --hostname=yourdomain.com
+autostart=true
+autorestart=true
+user=www-data
+numprocs=1
+redirect_stderr=true
+stdout_logfile=/var/www/societify/website/storage/logs/reverb.log
+stdout_logfile_maxbytes=20MB
+stdout_logfile_backups=5
+stopwaitsecs=3600
+stopsignal=SIGTERM
+priority=100</code></pre>
+
+            <h3>Step 2.3: LiveKit WebRTC Server (Video Intercom &amp; AGM)</h3>
+            <p>LiveKit powers audio/video communication. Install the binary:</p>
+            <pre><code>curl -sSL https://get.livekit.io | bash</code></pre>
+
+            <p>Create configuration file <code>/etc/livekit.yaml</code>:</p>
+            <pre><code>port: 7880
+bind_addresses:
+  - ""
+rtc:
+  tcp_port: 7881
+  port_range_start: 50000
+  port_range_end: 60000
+  use_external_ip: true
+keys:
+  societify_livekit_key: "CHANGE_TO_SECURE_RANDOM_SECRET_KEY_32_CHARS"
+logging:
+  level: info
+turn:
+  enabled: true
+  domain: livekit.yourdomain.com
+  tls_port: 5349
+  udp_port: 3478</code></pre>
+
+            <p>Create Supervisor configuration <code>/etc/supervisor/conf.d/societify-livekit.conf</code>:</p>
+            <pre><code>[program:societify-livekit]
+command=/usr/local/bin/livekit-server --config /etc/livekit.yaml
+autostart=true
+autorestart=true
+user=root
+redirect_stderr=true
+stdout_logfile=/var/log/livekit.log
+stdout_logfile_maxbytes=20MB
+stdout_logfile_backups=5
+stopwaitsecs=30
+stopsignal=SIGTERM
+priority=200</code></pre>
+
+            <h3>Step 2.4: Laravel Queue Worker</h3>
+            <p>Broadcast events (chat, notifications, webhooks) require a background queue worker. Create <code>/etc/supervisor/conf.d/societify-worker.conf</code>:</p>
+            <pre><code>[program:societify-worker]
+process_name=%(program_name)s_%(process_num)02d
+command=php /var/www/societify/website/artisan queue:work --sleep=3 --tries=3 --max-time=3600
+autostart=true
+autorestart=true
+user=www-data
+numprocs=2
+redirect_stderr=true
+stdout_logfile=/var/www/societify/website/storage/logs/worker.log
+stdout_logfile_maxbytes=20MB
+stdout_logfile_backups=5
+stopwaitsecs=3600
+stopsignal=SIGTERM
+priority=300</code></pre>
+
+            <h3>Step 2.5: Unified Supervisor Group</h3>
+            <p>Manage all real-time services together by creating <code>/etc/supervisor/conf.d/societify-group.conf</code>:</p>
+            <pre><code>[group:societify]
+programs=societify-reverb,societify-livekit,societify-worker
+priority=999</code></pre>
+
+            <p>Start and activate all daemons:</p>
+            <pre><code>sudo supervisorctl reread
+sudo supervisorctl update
+sudo supervisorctl status societify:*</code></pre>
+
+            <h2>3. Nginx Reverse Proxy with SSL (WSS on Port 443)</h2>
+            <p>Modern browsers block unencrypted WebSockets (<code>ws://</code>) on HTTPS sites. Add the following reverse proxy block to your Nginx HTTPS server configuration (<code>/etc/nginx/sites-available/societify</code>):</p>
+
+            <pre><code>location /app/ {
+    proxy_pass http://127.0.0.1:8080;
+    proxy_http_version 1.1;
+    proxy_set_header Upgrade $http_upgrade;
+    proxy_set_header Connection "Upgrade";
+    proxy_set_header Host $host;
+    proxy_set_header X-Real-IP $remote_addr;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-Proto https;
+    proxy_read_timeout 60s;
+    proxy_send_timeout 60s;
+}</code></pre>
+
+            <h2>4. Firewall &amp; Port Requirements</h2>
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Port</th>
+                        <th>Protocol</th>
+                        <th>Service</th>
+                        <th>Purpose</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>80 / 443</strong></td>
+                        <td>TCP</td>
+                        <td>Nginx</td>
+                        <td>HTTPS web traffic &amp; secure WebSockets (WSS)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>7881</strong></td>
+                        <td>TCP</td>
+                        <td>LiveKit</td>
+                        <td>WebRTC TCP fallback signaling</td>
+                    </tr>
+                    <tr>
+                        <td><strong>50000–60000</strong></td>
+                        <td>UDP</td>
+                        <td>LiveKit SFU</td>
+                        <td>WebRTC Audio/Video media packet streams</td>
+                    </tr>
+                    <tr>
+                        <td><strong>3478</strong></td>
+                        <td>UDP</td>
+                        <td>LiveKit TURN</td>
+                        <td>NAT traversal for cellular/firewalled devices</td>
+                    </tr>
+                </tbody>
+            </table>
         </section>
 
         <section id="cron-jobs">
