@@ -69,6 +69,7 @@
         <div class="nav-group">
             <div class="nav-header">Development</div>
             <a class="nav-link" data-target="folder-structure">Folder Structure</a>
+            <a class="nav-link" data-target="addon-development">Addon Architecture &amp; Build Guide</a>
             <a class="nav-link" data-target="razorpay-integration">Razorpay Integration</a>
         </div>
 
@@ -1676,6 +1677,104 @@ storage/fonts/document-bold.ttf   # optional — synthesised if absent</code></p
                 <li><code>routes/api.php</code>: API Routes for the mobile app and third-party integrations.</li>
                 <li><code>routes/web.php</code>: Web routes for the admin dashboard.</li>
                 <li><code>resources/js</code>: React frontend source files (Inertia.js).</li>
+            </ul>
+        </section>
+
+        <!-- Addon Architecture & Build Guide -->
+        <section id="addon-development">
+            <h1>Addon Architecture &amp; Build Guide</h1>
+            <p>Societify features a modular, plug-and-play addon architecture for both the <strong>Laravel/React Web application</strong> and the <strong>Flutter Mobile application</strong>. Addons can be built, tested, packaged, and distributed independently without modifying core application code.</p>
+
+            <h2>1. Addon Directory Structure</h2>
+            <p>Addons live inside <code>addons/{addon-slug}/</code> on the web, and <code>lib/modules/addons/{addon_slug}/</code> in the mobile app:</p>
+            <pre><code># Web Addon Structure (addons/{addon-slug}/)
+addons/{addon-slug}/
+├── manifest.json              # Addon metadata, menus, routes, permissions & capabilities
+├── src/
+│   ├── Controllers/           # Web & API controllers
+│   ├── Models/                # Central & tenant Eloquent models
+│   ├── Services/              # Core business logic
+│   └── Providers/             # ServiceProvider registering routes & migrations
+├── database/migrations/       # Database schema migrations
+├── routes/
+│   ├── web.php                # Inertia web routes
+│   └── api.php                # REST API routes for mobile/portal
+└── ui/                        # React / Inertia frontend pages & components
+    ├── index.ts               # UI entrypoint exporting page map
+    └── pages/                 # Inertia React page components
+
+# Mobile Addon Structure (lib/modules/addons/{addon_slug}/)
+lib/modules/addons/{addon_slug}/
+├── module_entry.dart          # ModuleEntry subclass with routes & DashboardItems
+├── controllers/               # GetX controllers
+├── models/                    # Data models and JSON deserializers
+└── screens/                   # Native Flutter screens following the design tokens</code></pre>
+
+            <h2>2. Building Addon Frontend Bundles</h2>
+            <p>Each web addon with an Inertia UI compiles into an isolated bundle using Vite:</p>
+
+            <h3>Build a single addon</h3>
+            <pre><code>cd website
+node scripts/build-addon.mjs &lt;addon-slug&gt;
+
+# Example for Affiliate System:
+node scripts/build-addon.mjs affiliate-system</code></pre>
+
+            <h3>Build all installed addons</h3>
+            <pre><code>cd website
+node scripts/build-addon.mjs --all</code></pre>
+
+            <div class="alert alert-info">
+                <strong>Output:</strong> The compiled JavaScript and CSS bundles are placed in <code>public/vendor/{addon-slug}/</code>, and Vite manifests are linked into the core Inertia page resolver automatically.
+            </div>
+
+            <h2>3. Manifest Configuration (<code>manifest.json</code>)</h2>
+            <p>The <code>manifest.json</code> defines how the addon integrates with the platform, menus, permissions, and mobile portals:</p>
+            <pre><code>{
+  "name": "Affiliate System",
+  "slug": "affiliate-system",
+  "version": "1.0.0",
+  "author": "Societify Team",
+  "description": "Tenant referral and commission management system",
+  "icon": "Users",
+  "menu_items": [
+    {
+      "id": "affiliate-portal",
+      "title": "Affiliate Portal",
+      "route": "society.affiliate.portal",
+      "icon": "Users",
+      "section": "finance",
+      "permission": "affiliate_system.view",
+      "roles": ["society_admin", "sub_admin"]
+    }
+  ],
+  "permissions": [
+    "affiliate_system.view",
+    "affiliate_system.manage"
+  ],
+  "compatibility": ">=1.3.0"
+}</code></pre>
+
+            <h2>4. Mobile App Addon Architecture</h2>
+            <p>Mobile addons inherit from <code>ModuleEntry</code> in <code>lib/core/module_entry.dart</code>:</p>
+            <ol>
+                <li><strong>Registration:</strong> Addons export through an entry stub (e.g. <code>lib/modules/addons/{addon_slug}_entry.dart</code>), which registers with <code>ModuleRegistry</code>.</li>
+                <li><strong>Dashboard Items:</strong> Define <code>DashboardItem</code> with <code>id</code>, <code>group</code> (e.g. <code>DashboardGroups.finance</code>), <code>permission</code>, and <code>mirrorsWebMenu: true</code>.</li>
+                <li><strong>Styling Tokens:</strong> Always use theme tokens (<code>context.scaffoldBg</code>, <code>context.surface</code>, <code>context.onSurface</code>, <code>context.muted</code>, <code>context.divider</code>) and <code>FormatHelper.formatCurrency(amount)</code> for dynamic multi-currency compatibility.</li>
+            </ol>
+
+            <h2>5. Packaging Addons for Distribution</h2>
+            <p>To produce single-addon distribution packages or CodeCanyon/client bundles:</p>
+            <pre><code># Package web + mobile bundle for specific addons:
+php scripts/package-full-addon.php &lt;addon-slug&gt;
+
+# Example:
+php scripts/package-full-addon.php affiliate-system</code></pre>
+            <p>Generated packages are deposited in <code>dist/addon-bundles/</code> containing:</p>
+            <ul>
+                <li><code>web/</code> — Production-ready web addon with compiled JS/CSS and migrations</li>
+                <li><code>mobile/</code> — Ready-to-drop Flutter addon module source</li>
+                <li><code>READ-ME-FIRST.txt</code> — Step-by-step buyer installation instructions</li>
             </ul>
         </section>
 
