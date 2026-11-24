@@ -29,6 +29,7 @@
         <div class="nav-group">
             <div class="nav-header">Configuration</div>
             <a class="nav-link" data-target="env-setup">System Settings</a>
+            <a class="nav-link" data-target="deeplink-setup">Deep Linking &amp; App Links</a>
             <a class="nav-link" data-target="realtime-setup">Real-Time &amp; WebSockets</a>
             <a class="nav-link" data-target="cron-jobs">Cron Jobs</a>
             <a class="nav-link" data-target="mail-setup">Mail Configuration</a>
@@ -53,6 +54,7 @@
             <div class="nav-header">Features</div>
             <a class="nav-link" data-target="features-overview">Features Overview</a>
             <a class="nav-link" data-target="saas-features">SaaS & Multi-Tenancy</a>
+            <a class="nav-link" data-target="affiliate-system">Affiliate Referral System</a>
             <a class="nav-link" data-target="billing-features">Billing & Payments</a>
             <a class="nav-link" data-target="printable-documents">Printable Documents</a>
             <a class="nav-link" data-target="visitor-features">Visitor Management</a>
@@ -701,6 +703,73 @@ flutter build ios --release \
             </ul>
         </section>
 
+        <!-- Deep Linking & App Links -->
+        <section id="deeplink-setup">
+            <h1>Deep Linking &amp; Universal App Links</h1>
+            <p>Societify supports seamless deep linking and verified Universal App Links on both Android and iOS. This allows external referral links, payment receipts, visitor invites, and web URLs to seamlessly open within the native mobile app automatically.</p>
+
+            <h2>1. Universal Links vs Custom Scheme</h2>
+            <table>
+                <thead>
+                    <tr><th>Type</th><th>Format</th><th>Behavior</th></tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Universal App Links (Web)</strong></td>
+                        <td><code>https://yourdomain.com/register?ref=CODE</code></td>
+                        <td>Opens native app if installed; opens web registration page if app is not installed.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Custom URI Scheme (App)</strong></td>
+                        <td><code>societify://register?ref=CODE</code></td>
+                        <td>Direct internal or cross-app launch directly into the Societify app.</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h2>2. Server-side Domain Verification (.well-known)</h2>
+            <p>To enable Android App Links and iOS Universal Links without security warnings, two verification files are located under <code>public/.well-known/</code> in your web installation:</p>
+
+            <h3>Android Digital Asset Links: <code>public/.well-known/assetlinks.json</code></h3>
+            <pre><code>[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.uniquedevelopers.societify",
+      "sha256_cert_fingerprint_list": [
+        "YOUR_RELEASE_KEYSTORE_OR_PLAY_STORE_SHA256_FINGERPRINT"
+      ]
+    }
+  }
+]</code></pre>
+            <div class="alert alert-info">
+                <strong>Obtaining your SHA-256 Fingerprint:</strong> In the Google Play Console, go to <strong>Release → Setup → App Integrity → Play App Signing</strong> to copy your Play Store SHA-256 fingerprint and paste it into the array above.
+            </div>
+
+            <h3>Apple Universal Links: <code>public/.well-known/apple-app-site-association</code></h3>
+            <pre><code>{
+  "applinks": {
+    "apps": [],
+    "details": [
+      {
+        "appID": "YOUR_APPLE_TEAM_ID.com.uniquedevelopers.societify",
+        "paths": [
+          "/register*",
+          "/ref/*"
+        ]
+      }
+    ]
+  }
+}</code></pre>
+            <div class="alert alert-info">
+                <strong>Apple Team ID:</strong> Replace <code>YOUR_APPLE_TEAM_ID</code> with your 10-character Apple Developer Team ID found on your Apple Developer Account membership page.
+            </div>
+
+            <h2>3. Web Server HTTPS &amp; MIME Types</h2>
+            <p>Ensure your web server (Nginx or Apache) serves <code>.well-known</code> files over HTTPS with Content-Type <code>application/json</code> and returns HTTP 200.</p>
+        </section>
+
         <section id="realtime-setup">
             <h1>Real-Time Messaging &amp; WebSockets (Reverb &amp; LiveKit)</h1>
             <p>Societify features high-performance real-time communication for instant resident-to-guard chat, live gatepass notifications, and WebRTC video intercom and AGM meetings. Administrators can choose between self-hosted <strong>Laravel Reverb</strong> (unlimited, zero subscription fees) or cloud-hosted <strong>Pusher Channels</strong>.</p>
@@ -1301,6 +1370,32 @@ php artisan schedule:run</code></pre>
                 <li><strong>Society Approval Workflow:</strong> Approve/reject society registrations</li>
                 <li><strong>Suspension Management:</strong> Suspend/reactivate society accounts</li>
                 <li><strong>Platform Analytics:</strong> Platform-wide analytics dashboard</li>
+            </ul>
+        </section>
+
+        <!-- Affiliate Referral System -->
+        <section id="affiliate-system">
+            <h1>Affiliate Referral System</h1>
+            <p>The Affiliate Referral System allows partners and affiliates to refer new societies/tenants to the SaaS platform and earn recurring commissions on their successful subscription payments.</p>
+
+            <h2>How It Works</h2>
+            <ol>
+                <li><strong>Affiliate Registration &amp; Link:</strong> Every affiliate receives a unique referral code (e.g. <code>AFFXYZ123</code>) and referral link (<code>https://yourdomain.com/register?ref=AFFXYZ123</code>).</li>
+                <li><strong>Tenant Sign-Up:</strong> A prospective society/tenant signs up using the affiliate's link or enters the referral code during web or mobile registration.</li>
+                <li><strong>Permanent Attribution:</strong> The system permanently attributes the tenant account to the referring affiliate. Each tenant can only be linked to one affiliate.</li>
+                <li><strong>Commission Calculation:</strong> When the referred tenant makes a successful subscription payment (initial or renewal), commission is calculated based on the configured rate (percentage or fixed amount).</li>
+                <li><strong>Payouts &amp; Balances:</strong> Earned commissions credit to the affiliate's balance. Affiliates can track referrals, earnings, and submit withdrawal requests directly from their affiliate portal.</li>
+            </ol>
+
+            <div class="alert alert-info">
+                <strong>Refund &amp; Cancellation Protection:</strong> Failed, cancelled, or refunded payments do not generate commission. If a transaction is refunded after commission is credited, the commission is automatically reversed.
+            </div>
+
+            <h2>Admin Configuration</h2>
+            <ul>
+                <li><strong>Super Admin Controls:</strong> Configure commission rates (percentage or fixed), minimum payout amounts, and review/approve affiliate payout requests in <strong>Super Admin → Addons → Affiliate System</strong>.</li>
+                <li><strong>Multi-Currency Support:</strong> Automatically formats all currency and earnings according to the platform or tenant's configured country settings.</li>
+                <li><strong>Cross-Platform Experience:</strong> Available both as an Inertia React web dashboard and natively inside the Flutter mobile app under the Finance section.</li>
             </ul>
         </section>
 
